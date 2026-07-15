@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
+<style>
+  @keyframes ogFloatY { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-16px) } }
+  @keyframes ogBob { 0%,100%{ transform: translateY(0) rotate(-1deg) } 50%{ transform: translateY(-10px) rotate(1deg) } }
+  @keyframes ogRise { 0%{ transform: translateY(0) translateX(0); opacity:0 } 8%{ opacity:.85 } 92%{ opacity:.5 } 100%{ transform: translateY(-620px) translateX(14px); opacity:0 } }
+  @keyframes ogTwinkle { 0%,100%{ opacity:.15; transform:scale(.8) } 50%{ opacity:.9; transform:scale(1.15) } }
+  @keyframes ogPulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(255,255,255,.5), 0 20px 44px -14px rgba(24,54,94,.5) } 50%{ box-shadow: 0 0 0 12px rgba(255,255,255,0), 0 20px 44px -14px rgba(24,54,94,.5) } }
+  @keyframes ogSparkle { 0%{ transform:scale(0) rotate(0deg); opacity:0 } 35%{ opacity:1 } 100%{ transform:scale(1.4) rotate(90deg); opacity:0 } }
+  @keyframes ogFishSwim { 0%{ transform: translateX(-60px) translateY(0) scaleX(1); } 45%{ transform: translateX(48vw) translateY(-18px) scaleX(1); } 50%{ transform: translateX(52vw) translateY(-18px) scaleX(-1); } 100%{ transform: translateX(120vw) translateY(10px) scaleX(-1); } }
+  @keyframes ogHeartDrift { 0%{ transform: translateY(0) scale(.8); opacity:0 } 10%{ opacity:.9 } 90%{ opacity:.7 } 100%{ transform: translateY(-560px) scale(1.1); opacity:0 } }
+  @keyframes ogExpandWash { 0%{ transform: scale(0); opacity:.9 } 100%{ transform: scale(2.8); opacity:0 } }
+  @keyframes ogWiggle { 0%,100%{ transform: scale(var(--s,1)) rotate(0deg) } 25%{ transform: scale(var(--s,1)) rotate(-8deg) } 75%{ transform: scale(var(--s,1)) rotate(8deg) } }
+  @keyframes ogConfettiFall { 0%{ transform: translateY(-30px) rotate(0deg); opacity:0 } 10%{ opacity:1 } 100%{ transform: translateY(520px) rotate(280deg); opacity:0 } }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin:0; }
+  .og-noscroll { scrollbar-width: none; -ms-overflow-style: none; }
+  .og-noscroll::-webkit-scrollbar { display: none; width:0; height:0; }
+</style>
+</helmet>
+<div style="width:100%; min-height:100vh; display:flex; align-items:center; justify-content:center; background: oklch(91% 0.006 240); font-family: 'Manrope', system-ui, sans-serif;">
+<div onMouseMove="{{ onMove }}" onTouchMove="{{ onTouchMoveHandler }}" style="position:relative; width:100%; max-width:430px; height:100dvh; max-height:100vh; overflow:hidden; background: linear-gradient(180deg, oklch(96% 0.014 228) 0%, oklch(90% 0.035 218) 45%, oklch(80% 0.07 213) 100%);">
+
+  <!-- decorative background layer: bubbles + stars, subtle parallax -->
+  <div ref="{{ setBgRef }}" style="position:absolute; inset:-20px; transform: translate(0px, 0px); transition: transform .4s ease-out; pointer-events:none;">
+    <sc-for list="{{ bubbles }}" as="b" hint-placeholder-count="12">
+      <div style="position:absolute; left:{{ b.left }}%; bottom:-40px; width:{{ b.size }}px; height:{{ b.size }}px; border-radius:50%; background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.95), rgba(255,255,255,.15) 55%, rgba(120,180,220,.08) 100%); border: 1px solid rgba(255,255,255,.5); animation: ogRise {{ b.duration }}s ease-in {{ b.delay }}s infinite;"></div>
+    </sc-for>
+    <sc-for list="{{ stars }}" as="s" hint-placeholder-count="16">
+      <div style="position:absolute; left:{{ s.left }}%; top:{{ s.top }}%; width:{{ s.size }}px; height:{{ s.size }}px; border-radius:50%; background:#fff; animation: ogTwinkle {{ s.duration }}s ease-in-out {{ s.delay }}s infinite;"></div>
+    </sc-for>
+  </div>
+
+  <!-- fish easter egg -->
+  <sc-if value="{{ fishSwim }}">
+    <div style="position:absolute; left:0; top:38%; font-size:26px; z-index:40; animation: ogFishSwim 3.4s ease-in-out forwards; filter: drop-shadow(0 4px 8px rgba(20,60,90,.25));">🐟</div>
+  </sc-if>
+
+  <!-- LANDING SCREEN -->
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:60px 30px 44px; z-index:10; opacity:{{ landingOpacity }}; transition: opacity .5s ease;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:16px; margin-top:14px; opacity:1;">
+        <div style="font-size:11.5px; letter-spacing:.34em; text-transform:uppercase; color: oklch(42% 0.07 235); font-weight:800;">You're&nbsp;Invited</div>
+        <div style="font-family:'Playfair Display', serif; font-size:46px; line-height:1.05; font-weight:800; color: oklch(24% 0.06 252); text-align:center; letter-spacing:-0.01em;">A Birthday<br/>Date</div>
+        <div style="width:40px; height:2px; background: linear-gradient(90deg, transparent, oklch(55% 0.1 230), transparent); margin:2px 0;"></div>
+        <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; border-radius:999px; background: rgba(255,255,255,.6); backdrop-filter: blur(14px); border:1px solid rgba(255,255,255,.8); box-shadow: 0 10px 26px -12px rgba(24,54,94,.3);">
+          <span style="font-size:14px; font-weight:800; color: oklch(32% 0.08 235); letter-spacing:.06em;">19 · 07 · 2026</span>
+        </div>
+        <div style="font-size:14.5px; color: oklch(38% 0.04 240); font-weight:700; margin-top:2px; text-align:center;">Renes turns 20, let's make it a date.</div>
+        <div style="font-family:'Playfair Display', serif; font-style:italic; font-size:15px; color: oklch(44% 0.09 235); margin-top:2px;">for my favorite person</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:24px;">
+        <div onClick="{{ tapHangyodon }}" style="position:relative; width:156px; height:156px; cursor:pointer; animation: ogBob 5.5s ease-in-out infinite;">
+          <div style="position:absolute; inset:-16px; border-radius:50%; background: radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,0) 70%); filter: blur(2px);"></div>
+          <img src="assets/hangyodon-face.jpg" alt="Hangyodon" style="position:relative; width:100%; height:100%; object-fit:cover; border-radius:50%; border:5px solid rgba(255,255,255,.95); box-shadow: 0 24px 46px -16px rgba(18,48,88,.45);" />
+          <div style="position:absolute; top:-4px; right:-4px; width:34px; height:34px; border-radius:50%; background:#fff; border:2px solid rgba(255,255,255,.95); box-shadow:0 8px 16px -6px rgba(18,48,88,.4); display:flex; align-items:center; justify-content:center; font-size:16px;">✨</div>
+        </div>
+        <button onClick="{{ openInvitation }}" style="border:none; cursor:pointer; padding:18px 38px; border-radius:999px; background: linear-gradient(135deg, oklch(68% 0.1 212), oklch(52% 0.11 244)); color:#fff; font-family:'Manrope', sans-serif; font-size:15.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; animation: ogPulse 2.6s ease-in-out infinite;">Open Invitation</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- OPENING TRANSITION WASH -->
+  <sc-if value="{{ opening }}">
+    <div style="position:absolute; left:50%; top:64%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; background: radial-gradient(circle, rgba(255,255,255,.9), rgba(150,205,230,.4)); animation: ogExpandWash .9s cubic-bezier(.2,.8,.2,1) forwards; z-index:30; pointer-events:none;"></div>
+  </sc-if>
+
+  <!-- DETAILS + QUESTION SCREEN -->
+  <sc-if value="{{ isMain }}">
+    <div class="og-noscroll" style="position:absolute; inset:0; overflow-y:auto; z-index:10; padding:56px 24px 40px; display:flex; flex-direction:column; gap:22px; opacity:{{ mainOpacity }}; transition: opacity .6s ease;">
+
+      <div style="text-align:center; display:flex; flex-direction:column; gap:8px; opacity:1;">
+        <div style="font-size:11px; letter-spacing:.3em; text-transform:uppercase; color: oklch(42% 0.07 235); font-weight:800;">The Plan</div>
+        <div style="font-family:'Playfair Display', serif; font-size:29px; font-weight:800; color: oklch(24% 0.06 252);">Our Day Together</div>
+      </div>
+
+      <!-- DETAILS CARD -->
+      <div style="position:relative; flex-shrink:0; border-radius:28px; padding:26px 24px 28px; background: rgba(255,255,255,.62); backdrop-filter: blur(20px); border:1px solid rgba(255,255,255,.85); box-shadow: 0 18px 40px -18px rgba(24,54,94,.35); overflow:hidden; display:flex; flex-direction:column; gap:0;">
+        <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px;">
+          <img src="assets/hangyodon-face.jpg" alt="Hangyodon" style="width:46px; height:46px; object-fit:cover; border-radius:50%; border:2px solid rgba(255,255,255,.95); box-shadow:0 8px 18px -6px rgba(18,48,88,.4); flex-shrink:0;" />
+          <div style="font-family:'Manrope', sans-serif; font-size:14.5px; font-weight:800; color: oklch(28% 0.06 250);">From Hangyodon, with love</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid rgba(60,110,150,.14);">
+          <span style="font-size:20px; flex-shrink:0;">🚗</span>
+          <div>
+            <div style="font-size:15px; color: oklch(26% 0.05 248); font-weight:800;">Pickup at 11:00 AM</div>
+            <div style="font-size:13px; color: oklch(42% 0.03 240); font-weight:600; margin-top:2px;">I'll be right below your house.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid rgba(60,110,150,.14);">
+          <span style="font-size:20px; flex-shrink:0;">👕</span>
+          <div>
+            <div style="font-size:15px; color: oklch(26% 0.05 248); font-weight:800;">Dress code: White</div>
+            <div style="font-size:13px; color: oklch(42% 0.03 240); font-weight:600; margin-top:2px;">Wear your favorite white fit.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 0 0; border-top:1px solid rgba(60,110,150,.14);">
+          <span style="font-size:20px; flex-shrink:0;">📅</span>
+          <div>
+            <div style="font-size:15px; color: oklch(26% 0.05 248); font-weight:800;">Sunday, 19 July 2026</div>
+            <div style="font-size:13px; color: oklch(42% 0.03 240); font-weight:600; margin-top:2px;">A whole day just for us.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- YES / NO QUESTION -->
+      <div style="position:relative; flex-shrink:0; border-radius:30px; padding:34px 26px 32px; margin-top:2px; text-align:center; background: linear-gradient(165deg, rgba(255,255,255,.7), rgba(255,255,255,.38)); border:1px solid rgba(255,255,255,.9); box-shadow: 0 22px 48px -18px rgba(24,54,94,.4), inset 0 1px 0 rgba(255,255,255,.9); display:flex; flex-direction:column; align-items:center; gap:0; overflow:hidden;">
+
+        <div style="position:absolute; top:-40px; left:50%; transform:translateX(-50%); width:180px; height:180px; border-radius:50%; background: radial-gradient(circle, rgba(160,205,235,.35), rgba(160,205,235,0) 70%); pointer-events:none;"></div>
+
+        <div style="position:relative; width:52px; height:52px; border-radius:50%; background: linear-gradient(135deg, oklch(72% 0.09 210), oklch(58% 0.1 240)); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 10px 22px -8px rgba(24,54,94,.5); margin-bottom:14px;">💌</div>
+
+        <div style="font-size:10.5px; letter-spacing:.3em; text-transform:uppercase; color: oklch(42% 0.07 235); font-weight:800;">One Question</div>
+        <div style="font-family:'Manrope', sans-serif; font-size:19px; line-height:1.3; font-weight:800; color: oklch(24% 0.06 252); min-height:60px; display:flex; align-items:center; justify-content:center; padding:10px 6px 4px; transition: opacity .2s ease;">{{ questionText }}</div>
+
+        <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-top:16px;">
+          <button onClick="{{ pressYes }}" style="border:none; cursor:pointer; padding:17px {{ yesPad }}px; border-radius:999px; background: linear-gradient(135deg, oklch(70% 0.1 208), oklch(50% 0.12 246)); color:#fff; font-family:'Manrope', sans-serif; font-size:15px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; display:flex; align-items:center; gap:8px; transition: padding .3s cubic-bezier(.2,.8,.2,1); animation: ogPulse 2.4s ease-in-out infinite; box-shadow: 0 12px 26px -10px rgba(24,54,94,.55);"><span>Yes</span><span style="font-size:15px;">💙</span></button>
+          <sc-if value="{{ showNo }}">
+            <button onClick="{{ pressNo }}" style="border:1.5px solid rgba(90,130,170,.4); cursor:pointer; padding:15px 20px; border-radius:999px; background: rgba(255,255,255,.6); color: oklch(40% 0.05 240); font-family:'Manrope', sans-serif; font-size:13.5px; font-weight:800; letter-spacing:.02em; --s:{{ noScale }}; transform: scale({{ noScale }}); transition: transform .3s cubic-bezier(.34,1.56,.64,1); animation: {{ noAnim }};">No</button>
+          </sc-if>
+        </div>
+
+        <div style="font-size:11.5px; color: oklch(46% 0.03 240); font-weight:600; margin-top:16px; min-height:16px; font-style:italic;">{{ noHint }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CELEBRATE / SEE YOU SOON SCREEN -->
+  <sc-if value="{{ isCelebrate }}">
+    <div style="position:absolute; inset:0; z-index:10; padding:60px 28px 44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; text-align:center; opacity:{{ mainOpacity }}; transition: opacity .6s ease;">
+      <div style="position:relative; width:100px; height:100px; animation: ogBob 4.5s ease-in-out infinite;">
+        <img src="assets/hangyodon-face.jpg" alt="Hangyodon celebrating" style="width:100%; height:100%; object-fit:cover; border-radius:50%; border:4px solid rgba(255,255,255,.95); box-shadow:0 18px 34px -12px rgba(18,48,88,.45);" />
+        <div style="position:absolute; bottom:-4px; right:-6px; width:36px; height:36px; border-radius:50%; background:#fff; border:2px solid rgba(255,255,255,.95); box-shadow:0 8px 16px -6px rgba(18,48,88,.4); display:flex; align-items:center; justify-content:center; font-size:17px;">🎉</div>
+      </div>
+      <sc-if value="{{ confettiBurst }}">
+        <sc-for list="{{ confetti }}" as="c" hint-placeholder-count="18">
+          <div style="position:absolute; left:{{ c.left }}%; top:-16px; width:{{ c.size }}px; height:{{ c.size2 }}px; background:{{ c.color }}; border-radius:2px; animation: ogConfettiFall {{ c.duration }}s ease-in {{ c.delay }}s forwards; z-index:20;"></div>
+        </sc-for>
+      </sc-if>
+      <div style="font-family:'Playfair Display', serif; font-size:31px; font-weight:800; color: oklch(24% 0.06 252);">See You Soon</div>
+      <div style="font-size:14px; font-weight:700; color: oklch(38% 0.08 235); letter-spacing:.02em;">Sunday, 19 July · Pickup 11:00 AM</div>
+
+      <sc-for list="{{ hearts }}" as="h" hint-placeholder-count="8">
+        <div style="position:absolute; left:{{ h.left }}%; bottom:-20px; font-size:{{ h.size }}px; opacity:.8; animation: ogHeartDrift {{ h.duration }}s ease-in {{ h.delay }}s infinite;">🤍</div>
+      </sc-for>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px; min-width:60px; padding:14px 8px; border-radius:20px; background: linear-gradient(160deg, oklch(88% 0.09 75), oklch(80% 0.1 60)); border:1px solid rgba(255,255,255,.85); box-shadow: 0 12px 26px -14px rgba(120,80,20,.4);">
+          <span style="font-family:'Playfair Display', serif; font-size:23px; font-weight:800; color: oklch(30% 0.07 55);">{{ cdDays }}</span>
+          <span style="font-size:10px; letter-spacing:.12em; text-transform:uppercase; color: oklch(38% 0.06 55); font-weight:800;">Days</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px; min-width:60px; padding:14px 8px; border-radius:20px; background: rgba(255,255,255,.6); backdrop-filter: blur(16px); border:1px solid rgba(255,255,255,.85); box-shadow: 0 10px 24px -14px rgba(24,54,94,.3);">
+          <span style="font-family:'Playfair Display', serif; font-size:23px; font-weight:800; color: oklch(26% 0.07 252);">{{ cdHours }}</span>
+          <span style="font-size:10px; letter-spacing:.12em; text-transform:uppercase; color: oklch(42% 0.04 240); font-weight:800;">Hrs</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px; min-width:60px; padding:14px 8px; border-radius:20px; background: rgba(255,255,255,.6); backdrop-filter: blur(16px); border:1px solid rgba(255,255,255,.85); box-shadow: 0 10px 24px -14px rgba(24,54,94,.3);">
+          <span style="font-family:'Playfair Display', serif; font-size:23px; font-weight:800; color: oklch(26% 0.07 252);">{{ cdMins }}</span>
+          <span style="font-size:10px; letter-spacing:.12em; text-transform:uppercase; color: oklch(42% 0.04 240); font-weight:800;">Min</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px; min-width:60px; padding:14px 8px; border-radius:20px; background: rgba(255,255,255,.6); backdrop-filter: blur(16px); border:1px solid rgba(255,255,255,.85); box-shadow: 0 10px 24px -14px rgba(24,54,94,.3);">
+          <span style="font-family:'Playfair Display', serif; font-size:23px; font-weight:800; color: oklch(26% 0.07 252);">{{ cdSecs }}</span>
+          <span style="font-size:10px; letter-spacing:.12em; text-transform:uppercase; color: oklch(42% 0.04 240); font-weight:800;">Sec</span>
+        </div>
+      </div>
+
+      <span onClick="{{ replay }}" style="font-size:12.5px; color: oklch(44% 0.05 240); font-weight:700; cursor:pointer; text-decoration:underline; text-underline-offset:3px; margin-top:10px;">Replay invitation</span>
+    </div>
+  </sc-if>
+
+  <!-- MUTE TOGGLE -->
+  <button onClick="{{ toggleMute }}" style="position:absolute; top:16px; right:16px; z-index:50; width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,.75); background: rgba(255,255,255,.5); backdrop-filter: blur(12px); cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; color: oklch(32% 0.07 240);">{{ muteIcon }}</button>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const rand = (min, max) => min + Math.random() * (max - min);
+    this.bubbles = Array.from({ length: 12 }, (_, i) => ({
+      left: rand(2, 92), size: rand(10, 30), duration: rand(9, 17), delay: rand(0, 12)
+    }));
+    this.stars = Array.from({ length: 16 }, (_, i) => ({
+      left: rand(2, 96), top: rand(2, 60), size: rand(2, 4), duration: rand(2.5, 5), delay: rand(0, 3)
+    }));
+    this.hearts = Array.from({ length: 8 }, (_, i) => ({
+      left: rand(4, 90), size: rand(12, 20), duration: rand(7, 12), delay: rand(0, 8)
+    }));
+    this.noHints = [
+      "Hangyodon looks a little sad.",
+      "Are you sure about that?",
+      "Come on, it'll be fun.",
+      "I'll wait, my heart won't.",
+      "Okay, last try. Please?",
+      "You know you want to."
+    ];
+    this.questionMessages = [
+      "So, will you come?",
+      "Pretty please?",
+      "Promise it'll be worth it.",
+      "Just say the word.",
+      "I'm not giving up.",
+      "Okay, final cute warning."
+    ];
+    const confettiColors = ['oklch(78% 0.1 210)', 'oklch(85% 0.09 70)', '#ffffff', 'oklch(70% 0.1 240)'];
+    this.confetti = Array.from({ length: 18 }, (_, i) => ({
+      left: rand(2, 96), size: rand(6, 10), size2: rand(8, 14), duration: rand(1.6, 2.6), delay: rand(0, 0.5),
+      color: confettiColors[i % confettiColors.length]
+    }));
+    this.targetDate = new Date('2026-07-19T11:00:00');
+    this.state = {
+      screen: 'landing', opening: false, muted: false,
+      tapCount: 0, fishSwim: false, noCount: 0, noWiggle: false, confettiBurst: false,
+      cdDays: '00', cdHours: '00', cdMins: '00', cdSecs: '00'
+    };
+  }
+
+  ensureAudio() {
+    if (!this.audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      this.audioCtx = new AC();
+    }
+    return this.audioCtx;
+  }
+
+  playTone(freq, dur = 0.3, type = 'sine', vol = 0.05, delay = 0) {
+    if (this.state.muted) return;
+    try {
+      const ctx = this.ensureAudio();
+      const t0 = ctx.currentTime + delay;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, t0);
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(vol, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + dur + 0.05);
+    } catch (e) {}
+  }
+
+  playChime = () => { this.playTone(880, 0.25, 'sine', 0.05); this.playTone(1320, 0.3, 'sine', 0.04, 0.08); };
+  playSparkle = () => { this.playTone(1500, 0.2, 'triangle', 0.03); this.playTone(2000, 0.15, 'triangle', 0.02, 0.05); };
+  playBubblePop = () => { this.playTone(600 + Math.random() * 200, 0.15, 'sine', 0.04); };
+  playCelebration = () => { [523, 659, 784, 1046].forEach((f, i) => this.playTone(f, 0.35, 'sine', 0.05, i * 0.12)); };
+  playAww = () => { this.playTone(440, 0.2, 'sine', 0.04); this.playTone(330, 0.25, 'sine', 0.03, 0.1); };
+
+  toggleMute = () => this.setState(s => ({ muted: !s.muted }));
+
+  openInvitation = () => {
+    this.playChime();
+    this.setState({ opening: true });
+    setTimeout(() => this.setState({ screen: 'main', opening: false }), 850);
+  };
+
+  tapHangyodon = () => {
+    this.playBubblePop();
+    const c = this.state.tapCount + 1;
+    this.setState({ tapCount: c });
+    if (c % 5 === 0 && !this.state.fishSwim) {
+      this.setState({ fishSwim: true });
+      setTimeout(() => this.setState({ fishSwim: false }), 3500);
+    }
+  };
+
+  pressNo = () => {
+    this.playAww();
+    this.setState(s => ({ noCount: s.noCount + 1, noWiggle: true }));
+    setTimeout(() => this.setState({ noWiggle: false }), 420);
+  };
+
+  pressYes = () => {
+    this.playCelebration();
+    this.setState({ screen: 'celebrate', confettiBurst: true });
+    this.startCountdown();
+    setTimeout(() => this.setState({ confettiBurst: false }), 2800);
+  };
+
+  startCountdown = () => {
+    if (this.countdownTimer) return;
+    const tick = () => {
+      const diff = this.targetDate.getTime() - Date.now();
+      const clamped = Math.max(0, diff);
+      const totalSecs = Math.floor(clamped / 1000);
+      const days = Math.floor(totalSecs / 86400);
+      const hours = Math.floor((totalSecs % 86400) / 3600);
+      const mins = Math.floor((totalSecs % 3600) / 60);
+      const secs = totalSecs % 60;
+      const pad = (n) => String(n).padStart(2, '0');
+      this.setState({ cdDays: pad(days), cdHours: pad(hours), cdMins: pad(mins), cdSecs: pad(secs) });
+    };
+    tick();
+    this.countdownTimer = setInterval(tick, 1000);
+  };
+
+  stopCountdown = () => {
+    if (this.countdownTimer) { clearInterval(this.countdownTimer); this.countdownTimer = null; }
+  };
+
+  componentWillUnmount() {
+    this.stopCountdown();
+  }
+
+  replay = () => {
+    this.stopCountdown();
+    this.setState({ screen: 'landing', noCount: 0 });
+  };
+
+  setBgRef = (el) => { this.bgRef = el; };
+
+  applyParallax(x, y) {
+    if (this.bgRef) this.bgRef.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  onMove = (e) => {
+    const w = window.innerWidth, h = window.innerHeight;
+    const x = (e.clientX / w - 0.5) * 14;
+    const y = (e.clientY / h - 0.5) * 14;
+    this.applyParallax(x, y);
+  };
+
+  onTouchMoveHandler = (e) => {
+    if (!e.touches || !e.touches[0]) return;
+    const t = e.touches[0];
+    const w = window.innerWidth, h = window.innerHeight;
+    const x = (t.clientX / w - 0.5) * 10;
+    const y = (t.clientY / h - 0.5) * 10;
+    this.applyParallax(x, y);
+  };
+
+  renderVals() {
+    const s = this.state;
+    const noCount = s.noCount;
+    const questionText = noCount === 0 ? this.questionMessages[0] : this.questionMessages[Math.min(noCount, this.questionMessages.length - 1)];
+    const noHint = noCount === 0 ? '' : this.noHints[Math.min(noCount - 1, this.noHints.length - 1)];
+    const noScale = Math.max(1 - noCount * 0.09, 0.62).toFixed(2);
+    const noAnim = s.noWiggle ? 'ogWiggle .4s ease' : 'none';
+    return {
+      bubbles: this.bubbles,
+      stars: this.stars,
+      hearts: this.hearts,
+      isLanding: s.screen === 'landing',
+      isMain: s.screen === 'main',
+      isCelebrate: s.screen === 'celebrate',
+      landingOpacity: s.opening ? 0.15 : 1,
+      mainOpacity: 1,
+      opening: s.opening,
+      questionText: questionText,
+      showNo: true,
+      noHint: noHint,
+      noScale: noScale,
+      noAnim: noAnim,
+      yesPad: Math.min(34 + noCount * 6, 64),
+      fishSwim: s.fishSwim,
+      muted: s.muted,
+      muteIcon: s.muted ? '🔇' : '🔊',
+      cdDays: s.cdDays, cdHours: s.cdHours, cdMins: s.cdMins, cdSecs: s.cdSecs,
+      confetti: this.confetti,
+      confettiBurst: s.confettiBurst,
+      setBgRef: this.setBgRef,
+      openInvitation: this.openInvitation,
+      tapHangyodon: this.tapHangyodon,
+      pressYes: this.pressYes,
+      pressNo: this.pressNo,
+      replay: this.replay,
+      toggleMute: this.toggleMute,
+      onMove: this.onMove,
+      onTouchMoveHandler: this.onTouchMoveHandler
+    };
+  }
+}
+
+</script>
+</body>
+</html>
