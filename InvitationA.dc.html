@@ -57,7 +57,8 @@
           <span style="font-size:14px; font-weight:800; color: oklch(32% 0.08 235); letter-spacing:.06em;">19 · 07 · 2026</span>
         </div>
         <div style="font-size:14.5px; color: oklch(38% 0.04 240); font-weight:700; margin-top:2px; text-align:center;">Renes turns 20, let's make it a date.</div>
-        <div style="font-family:'Playfair Display', serif; font-style:italic; font-size:15px; color: oklch(44% 0.09 235); margin-top:2px;">for my favorite person</div>
+        <div style="font-family:'Playfair Display', serif; font-style:italic; font-size:15px; color: oklch(44% 0.09 235); margin-top:2px;">for my Queen</div>
+        <div style="font-size:12px; color: oklch(44% 0.06 235); font-weight:700; letter-spacing:.02em; margin-top:4px;">{{ cdDays }}d · {{ cdHours }}h · {{ cdMins }}m away</div>
       </div>
 
       <div style="display:flex; flex-direction:column; align-items:center; gap:24px;">
@@ -89,7 +90,7 @@
       <div style="position:relative; flex-shrink:0; border-radius:28px; padding:26px 24px 28px; background: rgba(255,255,255,.62); backdrop-filter: blur(20px); border:1px solid rgba(255,255,255,.85); box-shadow: 0 18px 40px -18px rgba(24,54,94,.35); overflow:hidden; display:flex; flex-direction:column; gap:0;">
         <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px;">
           <img src="assets/hangyodon-face.jpg" alt="Hangyodon" style="width:46px; height:46px; object-fit:cover; border-radius:50%; border:2px solid rgba(255,255,255,.95); box-shadow:0 8px 18px -6px rgba(18,48,88,.4); flex-shrink:0;" />
-          <div style="font-family:'Manrope', sans-serif; font-size:14.5px; font-weight:800; color: oklch(28% 0.06 250);">From Hangyodon, with love</div>
+          <div style="font-family:'Manrope', sans-serif; font-size:14.5px; font-weight:800; color: oklch(28% 0.06 250);">From King</div>
         </div>
         <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid rgba(60,110,150,.14);">
           <span style="font-size:20px; flex-shrink:0;">🚗</span>
@@ -105,11 +106,18 @@
             <div style="font-size:13px; color: oklch(42% 0.03 240); font-weight:600; margin-top:2px;">Wear your favorite white fit.</div>
           </div>
         </div>
-        <div style="display:flex; align-items:center; gap:14px; padding:14px 0 0; border-top:1px solid rgba(60,110,150,.14);">
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid rgba(60,110,150,.14);">
           <span style="font-size:20px; flex-shrink:0;">📅</span>
           <div>
             <div style="font-size:15px; color: oklch(26% 0.05 248); font-weight:800;">Sunday, 19 July 2026</div>
             <div style="font-size:13px; color: oklch(42% 0.03 240); font-weight:600; margin-top:2px;">A whole day just for us.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 0 0; border-top:1px solid rgba(60,110,150,.14);">
+          <span style="font-size:20px; flex-shrink:0;">📍</span>
+          <div>
+            <div style="font-size:15px; color: oklch(26% 0.05 248); font-weight:800;">Gardens by the Bay</div>
+            <div style="font-size:13px; color: oklch(42% 0.03 240); font-weight:600; margin-top:2px;">Our adventure awaits.</div>
           </div>
         </div>
       </div>
@@ -220,55 +228,19 @@ class Component extends DCLogic {
     }));
     this.targetDate = new Date('2026-07-19T11:00:00');
     this.state = {
-      screen: 'landing', opening: false, muted: false,
+      screen: 'landing', opening: false,
       tapCount: 0, fishSwim: false, noCount: 0, noWiggle: false, confettiBurst: false,
       cdDays: '00', cdHours: '00', cdMins: '00', cdSecs: '00'
     };
+    setTimeout(() => this.startCountdown(), 0);
   }
-
-  ensureAudio() {
-    if (!this.audioCtx) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      this.audioCtx = new AC();
-    }
-    return this.audioCtx;
-  }
-
-  playTone(freq, dur = 0.3, type = 'sine', vol = 0.05, delay = 0) {
-    if (this.state.muted) return;
-    try {
-      const ctx = this.ensureAudio();
-      const t0 = ctx.currentTime + delay;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, t0);
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(vol, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + dur + 0.05);
-    } catch (e) {}
-  }
-
-  playChime = () => { this.playTone(880, 0.25, 'sine', 0.05); this.playTone(1320, 0.3, 'sine', 0.04, 0.08); };
-  playSparkle = () => { this.playTone(1500, 0.2, 'triangle', 0.03); this.playTone(2000, 0.15, 'triangle', 0.02, 0.05); };
-  playBubblePop = () => { this.playTone(600 + Math.random() * 200, 0.15, 'sine', 0.04); };
-  playCelebration = () => { [523, 659, 784, 1046].forEach((f, i) => this.playTone(f, 0.35, 'sine', 0.05, i * 0.12)); };
-  playAww = () => { this.playTone(440, 0.2, 'sine', 0.04); this.playTone(330, 0.25, 'sine', 0.03, 0.1); };
-
-  toggleMute = () => this.setState(s => ({ muted: !s.muted }));
 
   openInvitation = () => {
-    this.playChime();
     this.setState({ opening: true });
     setTimeout(() => this.setState({ screen: 'main', opening: false }), 850);
   };
 
   tapHangyodon = () => {
-    this.playBubblePop();
     const c = this.state.tapCount + 1;
     this.setState({ tapCount: c });
     if (c % 5 === 0 && !this.state.fishSwim) {
@@ -278,13 +250,11 @@ class Component extends DCLogic {
   };
 
   pressNo = () => {
-    this.playAww();
     this.setState(s => ({ noCount: s.noCount + 1, noWiggle: true }));
     setTimeout(() => this.setState({ noWiggle: false }), 420);
   };
 
   pressYes = () => {
-    this.playCelebration();
     this.setState({ screen: 'celebrate', confettiBurst: true });
     this.startCountdown();
     setTimeout(() => this.setState({ confettiBurst: false }), 2800);
@@ -316,7 +286,6 @@ class Component extends DCLogic {
   }
 
   replay = () => {
-    this.stopCountdown();
     this.setState({ screen: 'landing', noCount: 0 });
   };
 
@@ -346,7 +315,7 @@ class Component extends DCLogic {
     const s = this.state;
     const noCount = s.noCount;
     const questionText = noCount === 0 ? this.questionMessages[0] : this.questionMessages[Math.min(noCount, this.questionMessages.length - 1)];
-    const noHint = noCount === 0 ? '' : this.noHints[Math.min(noCount - 1, this.noHints.length - 1)];
+    const noHint = noCount === 0 ? '' : this.noHints[(noCount - 1) % this.noHints.length];
     const noScale = Math.max(1 - noCount * 0.09, 0.62).toFixed(2);
     const noAnim = s.noWiggle ? 'ogWiggle .4s ease' : 'none';
     return {
@@ -366,8 +335,6 @@ class Component extends DCLogic {
       noAnim: noAnim,
       yesPad: Math.min(34 + noCount * 6, 64),
       fishSwim: s.fishSwim,
-      muted: s.muted,
-      muteIcon: s.muted ? '🔇' : '🔊',
       cdDays: s.cdDays, cdHours: s.cdHours, cdMins: s.cdMins, cdSecs: s.cdSecs,
       confetti: this.confetti,
       confettiBurst: s.confettiBurst,
@@ -377,7 +344,6 @@ class Component extends DCLogic {
       pressYes: this.pressYes,
       pressNo: this.pressNo,
       replay: this.replay,
-      toggleMute: this.toggleMute,
       onMove: this.onMove,
       onTouchMoveHandler: this.onTouchMoveHandler
     };
