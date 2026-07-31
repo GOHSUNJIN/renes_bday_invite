@@ -56,7 +56,7 @@
 <!--  Shows countdown + DECLASSIFY button.           -->
 <!-- ════════════════════════════════════════════════ -->
   <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
-    <div style="position:absolute; inset:0; display:flex; flex-direction:column; z-index:10; opacity:{{ landingOpacity }}; transition: opacity .45s ease; overflow:hidden;">
+    <div style="position:absolute; inset:0; display:flex; flex-direction:column; z-index:10; overflow:hidden;">
 
       <!-- top classification bar -->
       <div style="background:#bf1b2c; padding:36px 0 8px; text-align:center; flex-shrink:0;">
@@ -137,7 +137,7 @@
 
           <!-- clearance note + DECLASSIFY button -->
           <div style="flex:1; display:flex; flex-direction:column; gap:12px; padding-top:2px;">
-            <div style="border-left:2px solid #c8b99a; padding-left:10px; font-size:12px; color:#5c4f37; font-family:'Courier Prime', monospace; font-style:italic; line-height:1.6;">"Cleared for your eyes only."</div>
+            <div style="border-left:2px solid #c8b99a; padding-left:10px; font-size:12px; color:#5c4f37; font-family:'Courier Prime', monospace; font-style:italic; line-height:1.6;">"had this planned for a while."</div>
             <div style="font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">Auth · Sun Jin</div>
             <button onClick="{{ openInvitation }}" style="font-family:'Special Elite', serif; font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#f5eed8; background:#16120a; border:none; padding:13px 0; cursor:pointer; box-shadow: 3px 3px 0 #bf1b2c; animation: ogPulse 2.6s ease-in-out infinite; width:100%;">DECLASSIFY →</button>
           </div>
@@ -145,10 +145,6 @@
 
       </div>
 
-      <!-- bottom classification bar -->
-      <div style="background:#bf1b2c; padding:7px 0; text-align:center; flex-shrink:0;">
-        <span style="font-family:'Special Elite', serif; font-size:9px; letter-spacing:.38em; color:#f5eed8; text-transform:uppercase;">For Your Eyes Only</span>
-      </div>
     </div>
   </sc-if>
 
@@ -160,7 +156,7 @@
 <!--    pg 3 — Question   (yes / no)                 -->
 <!-- ════════════════════════════════════════════════ -->
   <sc-if value="{{ isMain }}">
-    <div style="position:absolute; inset:0; z-index:10; display:flex; flex-direction:column; animation: ogFadeIn .5s ease both;">
+    <div style="position:absolute; inset:0; z-index:11; display:flex; flex-direction:column; animation: {{ mainEntrance }};">
 
       <!-- sticky header: title + page counter -->
       <div style="border-bottom:2px solid #16120a; padding:44px 22px 10px; flex-shrink:0;">
@@ -503,8 +499,7 @@ class Component extends DCLogic {
 
   openInvitation = () => {
     this.setState({ opening: true });
-    // landing fades out over 450ms, then main screen fades in via ogFadeIn
-    setTimeout(() => this.setState({ screen: 'main', opening: false, mainPage: 0, pageAnim: 'none' }), 450);
+    setTimeout(() => this.setState({ screen: 'main', opening: false, mainPage: 0, pageAnim: 'none' }), 420);
   };
 
   // ─────────────────────────────────────────────────
@@ -638,12 +633,12 @@ class Component extends DCLogic {
     return {
       // ── screen visibility ──
       isLanding:   s.screen === 'landing',
-      isMain:      s.screen === 'main',
+      isMain:      s.screen === 'main' || s.opening,
       isCelebrate: s.screen === 'celebrate',
 
       // ── landing ──
-      landingOpacity: s.opening ? 0 : 1,
-      shootStar:      s.shootStar,
+      mainEntrance: s.opening ? 'ogSlideInRight .42s cubic-bezier(.25,.46,.45,.94) both' : 'none',
+      shootStar:    s.shootStar,
 
       // ── page navigation ──
       mainPage,
