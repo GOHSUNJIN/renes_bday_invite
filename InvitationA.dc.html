@@ -31,7 +31,7 @@
 </helmet>
 
 <div style="width:100%; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#e8e0cc; font-family:'Courier Prime', Courier, monospace;">
-<div onMouseMove="{{ onMove }}" onTouchMove="{{ onTouchMoveHandler }}" style="position:relative; width:100%; max-width:430px; height:100dvh; max-height:100vh; overflow:hidden; background:#f5eed8; background-image: linear-gradient(rgba(22,18,10,.04) 1px, transparent 1px); background-size:100% 30px;">
+<div onMouseMove="{{ onMove }}" onTouchMove="{{ onTouchMoveHandler }}" onTouchStart="{{ onTouchStart }}" onTouchEnd="{{ onTouchEnd }}" style="position:relative; width:100%; max-width:430px; height:100dvh; max-height:100vh; overflow:hidden; background:#f5eed8; background-image: linear-gradient(rgba(22,18,10,.04) 1px, transparent 1px); background-size:100% 30px;">
 
   <!-- paper airplane easter egg -->
   <sc-if value="{{ shootStar }}">
@@ -148,6 +148,8 @@
               </div>
             </div>
 
+            <div style="text-align:center; font-size:11.5px; color:#9c8060; font-style:italic; font-family:'Courier Prime', monospace;">see the plan on the next page</div>
+
           </div>
         </sc-if>
 
@@ -250,10 +252,10 @@
         <div style="position:absolute; left:{{ h.left }}%; bottom:-20px; font-size:{{ h.size }}px; opacity:.8; animation: ogHeartDrift {{ h.duration }}s ease-in {{ h.delay }}s infinite;">❤️</div>
       </sc-for>
 
-      <!-- mission accepted stamp -->
+      <!-- confirmed stamp -->
       <div style="border:3px solid #16120a; padding:8px 22px; margin-bottom:4px;">
-        <div style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.3em; color:#9c8060; text-transform:uppercase; margin-bottom:2px;">Status</div>
-        <div style="font-family:'Special Elite', serif; font-size:22px; color:#bf1b2c; letter-spacing:.06em; text-transform:uppercase;">Mission Accepted</div>
+        <div style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.3em; color:#9c8060; text-transform:uppercase; margin-bottom:2px;">Confirmed</div>
+        <div style="font-family:'Special Elite', serif; font-size:22px; color:#bf1b2c; letter-spacing:.06em; text-transform:uppercase;">It's a Date.</div>
       </div>
 
       <!-- character -->
@@ -267,7 +269,7 @@
       </div>
 
       <div style="width:100%; border-top:1.5px solid #c8b99a; border-bottom:1.5px solid #c8b99a; padding:12px 0; margin:2px 0;">
-        <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a;">I'll Be Waiting.</div>
+        <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a;">See You Then.</div>
         <div style="font-size:12px; color:#7a6040; font-style:italic; margin-top:4px; font-family:'Courier Prime', monospace;">16 Aug. I'll be at yours at 12.</div>
       </div>
 
@@ -291,7 +293,10 @@
         </div>
       </div>
 
-      <span onClick="{{ replay }}" style="font-size:11.5px; color:#9c8060; font-family:'Courier Prime', monospace; cursor:pointer; text-decoration:underline; text-underline-offset:3px; margin-top:4px;">↩ reopen file</span>
+      <div style="display:flex; gap:22px; margin-top:4px;">
+        <span onClick="{{ viewPlan }}" style="font-size:11.5px; color:#9c8060; font-family:'Courier Prime', monospace; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">📋 see the plan</span>
+        <span onClick="{{ replay }}" style="font-size:11.5px; color:#9c8060; font-family:'Courier Prime', monospace; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">↩ back to start</span>
+      </div>
     </div>
   </sc-if>
 
@@ -311,20 +316,20 @@ class Component extends DCLogic {
 
     this.noHints = [
       "you sure about that?",
-      "what if it changes things?",
-      "i've been sitting on this for a while...",
+      "i already made the reservations...",
+      "the fish will be disappointed.",
       "don't leave me hanging 😢",
       "okay but your loss",
-      "...fine. but think about it. ❤️"
+      "...see you at 12 regardless. ❤️"
     ];
 
     this.questionMessages = [
-      "Will you hear me out?",
-      "I promise it's not that deep.",
-      "I've been sitting on this for a while.",
-      "Just say yes la.",
-      "Please. 🥺",
-      "Okay I'm just gonna say it."
+      "so, are you in?",
+      "it'll be a good day, i promise.",
+      "come on la.",
+      "i already made reservations.",
+      "please. 🥺",
+      "okay i'll just show up at 12 anyway."
     ];
 
     const confettiStyles = [
@@ -364,6 +369,28 @@ class Component extends DCLogic {
 
   prevPage = () => {
     this.setState(s => ({ mainPage: Math.max(s.mainPage - 1, 0), pageAnim: 'ogSlideInLeft .32s ease forwards' }));
+  };
+
+  viewPlan = () => {
+    this.setState({ screen: 'main', mainPage: 1, pageAnim: 'none' });
+  };
+
+  onTouchStart = (e) => {
+    if (!e.touches || !e.touches[0]) return;
+    this.touchStartX = e.touches[0].clientX;
+    this.touchStartY = e.touches[0].clientY;
+  };
+
+  onTouchEnd = (e) => {
+    if (this.touchStartX == null) return;
+    const dx = e.changedTouches[0].clientX - this.touchStartX;
+    const dy = e.changedTouches[0].clientY - this.touchStartY;
+    this.touchStartX = null;
+    this.touchStartY = null;
+    if (this.state.screen !== 'main') return;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) this.nextPage();
+    else this.prevPage();
   };
 
   tapHangyodon = () => {
@@ -465,6 +492,9 @@ class Component extends DCLogic {
       replay: this.replay,
       onMove: this.onMove,
       onTouchMoveHandler: this.onTouchMoveHandler,
+      onTouchStart: this.onTouchStart,
+      onTouchEnd: this.onTouchEnd,
+      viewPlan: this.viewPlan,
       mainPage,
       mainPageLabel: String(mainPage + 1).padStart(2, '0'),
       pageAnim: s.pageAnim || 'none',
