@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<!--
+  invite.dc.html — reneseal
+  ┌─────────────────────────────────────────────────┐
+  │  Secret invite site  ·  reneseal.vercel.app     │
+  ├─────────────────────────────────────────────────┤
+  │  SCREENS                                        │
+  │    1. Landing   — countdown + DECLASSIFY        │
+  │    2. Main      — 3-page case file              │
+  │       ├─ pg 1: Details (rendezvous, date)       │
+  │       ├─ pg 2: Itinerary (times + stops)        │
+  │       └─ pg 3: Question (yes / no)              │
+  │    3. Celebrate — confirmed!                    │
+  ├─────────────────────────────────────────────────┤
+  │  DC FRAMEWORK                                   │
+  │    Template (HTML) + Logic (JS) live here.      │
+  │    The runtime lives in support.js — don't edit.│
+  └─────────────────────────────────────────────────┘
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<!-- ┌──────────────────────────────────────────────┐ -->
+<!-- │  HEAD — fonts, favicon, keyframes, base CSS  │ -->
+<!-- └──────────────────────────────────────────────┘ -->
+<helmet data-dc-atomics>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</helmet>
+
+<!-- ┌──────────────────────────────────────────────┐ -->
+<!-- │  APP SHELL                                   │ -->
+<!-- │  Outer div: centres card on wide screens.    │ -->
+<!-- │  Inner div: phone-sized card, touch handler. │ -->
+<!-- └──────────────────────────────────────────────┘ -->
+<div style="width:100%; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#e8e0cc; font-family:'Courier Prime', Courier, monospace;">
+<div onMouseMove="{{ onMove }}" onTouchMove="{{ onTouchMoveHandler }}" onTouchStart="{{ onTouchStart }}" onTouchEnd="{{ onTouchEnd }}"
+     style="position:relative; width:100%; max-width:430px; height:100dvh; max-height:100vh; overflow:hidden;
+            background:#f5eed8; background-image:linear-gradient(rgba(22,18,10,.04) 1px, transparent 1px); background-size:100% 30px;">
+
+  <!-- ✈️ Easter egg: paper plane. Tap Shin-chan 5× to trigger. -->
+  <sc-if value="{{ shootStar }}">
+    <div style="position:absolute; left:0; top:32%; font-size:22px; z-index:40; animation: ogPaperFly 3.2s ease-in-out forwards;">✈️</div>
+  </sc-if>
+
+<!-- ════════════════════════════════════════════════ -->
+<!--  SCREEN 1: LANDING                              -->
+<!--  Shows countdown + DECLASSIFY button.           -->
+<!-- ════════════════════════════════════════════════ -->
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute; inset:0; display:flex; flex-direction:column; z-index:10; opacity:{{ landingOpacity }}; transition: opacity .45s ease; overflow:hidden;">
+
+      <!-- top classification bar -->
+      <div style="background:#bf1b2c; padding:36px 0 8px; text-align:center; flex-shrink:0;">
+        <span style="font-family:'Special Elite', serif; font-size:10px; letter-spacing:.4em; color:#f5eed8; text-transform:uppercase;">Top Secret</span>
+      </div>
+
+      <!-- scrollable content -->
+      <div style="flex:1; padding:20px 26px 14px; display:flex; flex-direction:column; gap:16px; overflow-y:auto;" class="og-noscroll">
+
+        <!-- doc meta line -->
+        <div style="display:flex; align-items:center; gap:8px; font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">
+          <span>File 16-08-2026</span>
+          <div style="flex:1; height:1px; background: repeating-linear-gradient(90deg, #c8b99a 0, #c8b99a 3px, transparent 3px, transparent 8px);"></div>
+          <span>Personal</span>
+        </div>
+
+        <!-- big title + stamp + recipient -->
+        <div style="position:relative; padding-right:68px;">
+          <div style="font-family:'Special Elite', serif; font-size:38px; color:#16120a; line-height:1.05;">A Secret<br/>to Share</div>
+          <div style="position:absolute; top:6px; right:0; border:2.5px solid #bf1b2c; padding:4px 9px; transform:rotate(-12deg); animation: ogStamp .5s .3s cubic-bezier(.2,.8,.2,1) both;">
+            <span style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.22em; color:#bf1b2c; text-transform:uppercase; opacity:.9;">Secret</span>
+          </div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:6px; font-size:11px; font-family:'Courier Prime', monospace; color:#7a6040;">
+            <span>To:</span>
+            <span style="background:#16120a; color:#16120a; padding:2px 18px; display:inline-block; user-select:none;">▓▓▓▓▓▓</span>
+            <span style="font-style:italic;">(You Know Who)</span>
+          </div>
+        </div>
+
+        <!-- dashed divider -->
+        <div style="height:1.5px; background: repeating-linear-gradient(90deg, #9c8060 0, #9c8060 6px, transparent 6px, transparent 12px);"></div>
+
+        <!-- countdown: big digit boxes -->
+        <div>
+          <div style="font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:9px;">T-Minus Until Mission Day</div>
+          <div style="display:flex; align-items:flex-end; gap:4px;">
+            <div style="flex:1; text-align:center;">
+              <div style="font-family:'Special Elite', serif; font-size:34px; color:#bf1b2c; line-height:1; background:rgba(191,27,44,.07); border:1.5px solid #bf1b2c; padding:7px 2px;">{{ cdDays }}</div>
+              <div style="font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:4px;">Days</div>
+            </div>
+            <div style="font-family:'Special Elite', serif; font-size:26px; color:#c8b99a; padding-bottom:20px; flex-shrink:0; line-height:1;">:</div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-family:'Special Elite', serif; font-size:34px; color:#16120a; line-height:1; background:#faf6ea; border:1.5px solid #9c8060; padding:7px 2px;">{{ cdHours }}</div>
+              <div style="font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:4px;">Hrs</div>
+            </div>
+            <div style="font-family:'Special Elite', serif; font-size:26px; color:#c8b99a; padding-bottom:20px; flex-shrink:0; line-height:1;">:</div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-family:'Special Elite', serif; font-size:34px; color:#16120a; line-height:1; background:#faf6ea; border:1.5px solid #9c8060; padding:7px 2px;">{{ cdMins }}</div>
+              <div style="font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:4px;">Min</div>
+            </div>
+            <div style="font-family:'Special Elite', serif; font-size:26px; color:#c8b99a; padding-bottom:20px; flex-shrink:0; line-height:1;">:</div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-family:'Special Elite', serif; font-size:34px; color:#16120a; line-height:1; background:#faf6ea; border:1.5px solid #9c8060; padding:7px 2px; animation: ogBlink 1s step-end infinite;">{{ cdSecs }}</div>
+              <div style="font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:4px;">Sec</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- dashed divider -->
+        <div style="height:1.5px; background: repeating-linear-gradient(90deg, #9c8060 0, #9c8060 6px, transparent 6px, transparent 12px);"></div>
+
+        <!-- dossier photo + button row -->
+        <div style="display:flex; align-items:flex-start; gap:16px;">
+
+          <!-- Shin-chan in polaroid/dossier frame (tap 5× easter egg) -->
+          <div onClick="{{ tapHangyodon }}" style="flex-shrink:0; cursor:pointer; animation: ogBob 5.5s ease-in-out infinite;">
+            <div style="width:100px; background:#fff; border:1.5px solid #c8b99a; padding:6px 6px 22px; box-shadow: 3px 3px 0 rgba(22,18,10,.2); position:relative;">
+              <div style="width:100%; aspect-ratio:1; overflow:hidden; background:#faf6ea;">
+                <img src="https://s3.getstickerpack.com/storage/uploads/sticker-pack/shin-chan-2/sticker_1.webp" alt="Shin-chan"
+                     style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply;" />
+              </div>
+              <div style="position:absolute; bottom:0; left:0; right:0; background:#16120a; padding:4px 0; text-align:center;">
+                <span style="font-size:7.5px; letter-spacing:.14em; color:#9c8060; font-family:'Courier Prime', monospace; text-transform:uppercase;">Field Agent</span>
+              </div>
+            </div>
+            <div style="text-align:center; margin-top:5px; font-size:9px; color:#9c8060; font-family:'Courier Prime', monospace; letter-spacing:.08em; opacity:.65;">(tap 5×)</div>
+          </div>
+
+          <!-- clearance note + DECLASSIFY button -->
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; padding-top:2px;">
+            <div style="border-left:2px solid #c8b99a; padding-left:10px; font-size:12px; color:#5c4f37; font-family:'Courier Prime', monospace; font-style:italic; line-height:1.6;">"Cleared for your eyes only."</div>
+            <div style="font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">Auth · Sun Jin</div>
+            <button onClick="{{ openInvitation }}" style="font-family:'Special Elite', serif; font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#f5eed8; background:#16120a; border:none; padding:13px 0; cursor:pointer; box-shadow: 3px 3px 0 #bf1b2c; animation: ogPulse 2.6s ease-in-out infinite; width:100%;">DECLASSIFY →</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- bottom classification bar -->
+      <div style="background:#bf1b2c; padding:7px 0; text-align:center; flex-shrink:0;">
+        <span style="font-family:'Special Elite', serif; font-size:9px; letter-spacing:.38em; color:#f5eed8; text-transform:uppercase;">For Your Eyes Only</span>
+      </div>
+    </div>
+  </sc-if>
+
+<!-- ════════════════════════════════════════════════ -->
+<!--  SCREEN 2: MAIN (3-page case file)              -->
+<!--    Swipe left/right or use PREV/NEXT buttons.   -->
+<!--    pg 1 — Details    (rendezvous + date)        -->
+<!--    pg 2 — Itinerary  (full day schedule)        -->
+<!--    pg 3 — Question   (yes / no)                 -->
+<!-- ════════════════════════════════════════════════ -->
+  <sc-if value="{{ isMain }}">
+    <div style="position:absolute; inset:0; z-index:10; display:flex; flex-direction:column; animation: ogFadeIn .5s ease both;">
+
+      <!-- sticky header: title + page counter -->
+      <div style="border-bottom:2px solid #16120a; padding:44px 22px 10px; flex-shrink:0;">
+        <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:4px;">Briefing Document</div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <div style="font-family:'Special Elite', serif; font-size:24px; color:#16120a; line-height:1.1;">Just Between Us</div>
+          <div style="font-size:9px; letter-spacing:.2em; color:#9c8060; font-family:'Courier Prime', monospace;">{{ mainPageLabel }} / 03</div>
+        </div>
+      </div>
+
+      <!-- page area: only one page visible at a time -->
+      <div style="flex:1; position:relative; overflow:hidden;">
+
+        <!-- ·· PAGE 1: Details ·· -->
+        <sc-if value="{{ isPage0 }}">
+          <div style="position:absolute; inset:0; padding:16px 22px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; animation: {{ pageAnim }};" class="og-noscroll">
+
+            <!-- dispatch card -->
+            <div style="border:1.5px solid #9c8060; background:#faf6ea; overflow:hidden;">
+
+              <!-- card header: agent + title + secret stamp -->
+              <div style="background:#16120a; padding:10px 14px; display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:50%; overflow:hidden; background:#faf6ea; border:1.5px solid #9c8060; flex-shrink:0;">
+                  <img src="https://s3.getstickerpack.com/storage/uploads/sticker-pack/shin-chan-2/sticker_2.webp" alt="Shin-chan"
+                       style="width:100%; height:100%; object-fit:contain; padding:0; mix-blend-mode:multiply;" />
+                </div>
+                <div>
+                  <div style="font-size:9px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">Agent: Sun Jin</div>
+                  <div style="font-family:'Special Elite', serif; font-size:14px; color:#f5eed8; letter-spacing:.04em;">Personal Dispatch</div>
+                </div>
+                <div style="margin-left:auto; border:1.5px solid #bf1b2c; padding:2px 7px; transform:rotate(-8deg);">
+                  <span style="font-family:'Special Elite', serif; font-size:9px; letter-spacing:.15em; color:#bf1b2c;">Secret</span>
+                </div>
+              </div>
+
+              <!-- rendezvous row -->
+              <div style="display:flex; align-items:flex-start; gap:12px; padding:13px 14px 11px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:14px; flex-shrink:0; margin-top:1px;">🚗</span>
+                <div>
+                  <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Rendezvous</div>
+                  <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">12pm. I'll be at yours.</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Don't keep me waiting.</div>
+                </div>
+              </div>
+
+              <!-- date row -->
+              <div style="display:flex; align-items:flex-start; gap:12px; padding:13px 14px 11px;">
+                <span style="font-size:14px; flex-shrink:0; margin-top:1px;">📅</span>
+                <div>
+                  <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Date</div>
+                  <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">Sunday, 16 August 2026</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Clear your whole day.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align:center; font-size:11.5px; color:#9c8060; font-style:italic; font-family:'Courier Prime', monospace;">see the plan on the next page</div>
+
+          </div>
+        </sc-if>
+
+        <!-- ·· PAGE 2: Itinerary ·· -->
+        <sc-if value="{{ isPage1 }}">
+          <div style="position:absolute; inset:0; padding:16px 22px; overflow-y:auto; animation: {{ pageAnim }};" class="og-noscroll">
+            <div style="border:1.5px solid #9c8060; background:#faf6ea; overflow:hidden;">
+
+              <!-- header -->
+              <div style="background:#16120a; padding:8px 14px; display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div style="width:26px; height:26px; border-radius:50%; overflow:hidden; background:#faf6ea; border:1px solid #9c8060; flex-shrink:0;">
+                    <img src="https://s3.getstickerpack.com/storage/uploads/sticker-pack/shin-chan-2/sticker_3.webp" alt="Shin-chan"
+                         style="width:100%; height:100%; object-fit:contain; padding:0; mix-blend-mode:multiply;" />
+                  </div>
+                  <span style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.2em; color:#f5eed8; text-transform:uppercase;">Itinerary</span>
+                </div>
+                <span style="font-size:9px; letter-spacing:.12em; color:#9c8060; font-family:'Courier Prime', monospace;">16 Aug 2026</span>
+              </div>
+
+              <!-- schedule rows: [num] [time] [icon] [stop] -->
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">01</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">12:00</span>
+                <span style="font-size:13px; flex-shrink:0;">🚂</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Depart Woodlands</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">02</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">13:00</span>
+                <span style="font-size:13px; flex-shrink:0;">🐾</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Snoopy Cafe</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">03</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">13:30</span>
+                <span style="font-size:13px; flex-shrink:0;">🐠</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Oceanarium</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">04</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">16:00</span>
+                <span style="font-size:13px; flex-shrink:0;">🎁</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Pop Mart Cafe</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">05</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">16:30</span>
+                <span style="font-size:13px; flex-shrink:0;">🌅</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Beach Sunset</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">06</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">19:00</span>
+                <span style="font-size:13px; flex-shrink:0;">🍽️</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Dinner</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">07</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">20:30</span>
+                <span style="font-size:13px; flex-shrink:0;">📸</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Solace Studios</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 14px;">
+                <span style="font-size:9.5px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">08</span>
+                <span style="font-size:11px; color:#bf1b2c; font-family:'Courier Prime', monospace; font-weight:700; flex-shrink:0; min-width:42px;">21:30</span>
+                <span style="font-size:13px; flex-shrink:0;">🏠</span>
+                <div style="font-size:12.5px; color:#16120a; font-family:'Courier Prime', monospace;">Head Home</div>
+              </div>
+
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ·· PAGE 3: Question (yes / no) ·· -->
+        <sc-if value="{{ isPage2 }}">
+          <div style="position:absolute; inset:0; padding:16px 22px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; animation: {{ pageAnim }};">
+
+            <!-- Shin-chan + speech bubble -->
+            <div style="display:flex; align-items:center; gap:14px; width:100%;">
+              <div style="position:relative; flex-shrink:0; animation: ogBob 5s ease-in-out infinite;">
+                <div style="width:82px; height:82px; border-radius:50%; border:2px dashed #9c8060; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 0 4px #f5eed8, 0 0 0 6px #c8b99a;">
+                  <div style="width:68px; height:68px; border-radius:50%; overflow:hidden; background:#faf6ea; border:1.5px solid #c8b99a;">
+                    <img src="https://s3.getstickerpack.com/storage/uploads/sticker-pack/shin-chan-2/sticker_4.webp" alt="Shin-chan"
+                         style="width:100%; height:100%; object-fit:contain; padding:0; mix-blend-mode:multiply;" />
+                  </div>
+                </div>
+                <div style="position:absolute; bottom:-2px; right:-2px; width:24px; height:24px; border-radius:50%; background:#bf1b2c; border:2px solid #f5eed8; display:flex; align-items:center; justify-content:center; font-size:11px;">❓</div>
+              </div>
+              <!-- speech bubble with triangle pointer -->
+              <div style="flex:1; background:#16120a; padding:11px 14px; position:relative;">
+                <div style="position:absolute; left:-8px; top:50%; transform:translateY(-50%); width:0; height:0; border-top:7px solid transparent; border-bottom:7px solid transparent; border-right:8px solid #16120a;"></div>
+                <div style="font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:4px;">from Sun Jin</div>
+                <div style="font-family:'Special Elite', serif; font-size:14px; color:#f5eed8; line-height:1.3;">had this planned out for a while. just one thing.</div>
+              </div>
+            </div>
+
+            <!-- yes / no question card -->
+            <div style="width:100%; border:1.5px solid #16120a; background:#faf6ea; padding:20px 18px 18px; position:relative; overflow:hidden;">
+              <!-- faint watermark -->
+              <div style="position:absolute; bottom:-8px; right:-6px; font-family:'Special Elite', serif; font-size:64px; color:rgba(191,27,44,.06); line-height:1; pointer-events:none; letter-spacing:-.02em; text-transform:uppercase; font-weight:900;">?</div>
+              <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:10px;">Query 0{{ queryNum }} / 06</div>
+              <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a; line-height:1.35; min-height:54px; display:flex; align-items:center; margin-bottom:20px;">{{ questionText }}</div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <button onClick="{{ pressYes }}" style="font-family:'Special Elite', serif; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:#f5eed8; background:#bf1b2c; border:none; padding:12px {{ yesPad }}px; cursor:pointer; box-shadow: 2px 3px 0 rgba(22,18,10,.35); display:flex; align-items:center; gap:8px; transition: padding .3s cubic-bezier(.2,.8,.2,1); animation: ogPulse 2.4s ease-in-out infinite;">Affirmative ❤️</button>
+                <sc-if value="{{ showNo }}">
+                  <button onClick="{{ pressNo }}" style="font-family:'Courier Prime', monospace; font-size:13px; color:#9c8060; background:transparent; border:1.5px solid #c8b99a; padding:10px 16px; cursor:pointer; --s:{{ noScale }}; transform: scale({{ noScale }}); transition: transform .3s cubic-bezier(.34,1.56,.64,1); animation: {{ noAnim }};">Negative</button>
+                </sc-if>
+              </div>
+              <div style="font-size:11.5px; color:#9c8060; font-style:italic; margin-top:14px; min-height:16px; font-family:'Courier Prime', monospace;">{{ noHint }}</div>
+            </div>
+
+          </div>
+        </sc-if>
+
+      </div><!-- end page area -->
+
+      <!-- nav bar: ← PREV  /  PG 01/03  /  NEXT → -->
+      <div style="border-top:1.5px solid #c8b99a; padding:12px 22px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <sc-if value="{{ showPrevPage }}">
+          <button onClick="{{ prevPage }}" style="font-family:'Courier Prime', monospace; font-size:11px; letter-spacing:.18em; color:#9c8060; background:transparent; border:1px solid #c8b99a; padding:8px 14px; cursor:pointer; text-transform:uppercase;">← PREV</button>
+        </sc-if>
+        <sc-if value="{{ hidePrevPage }}">
+          <div style="width:78px;"></div>
+        </sc-if>
+
+        <div style="font-size:9px; letter-spacing:.25em; color:#9c8060; font-family:'Courier Prime', monospace;">PG {{ mainPageLabel }} / 03</div>
+
+        <sc-if value="{{ showNextPage }}">
+          <button onClick="{{ nextPage }}" style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.18em; color:#f5eed8; background:#16120a; border:none; padding:8px 14px; cursor:pointer; text-transform:uppercase;">NEXT →</button>
+        </sc-if>
+        <sc-if value="{{ hideNextPage }}">
+          <div style="width:78px;"></div>
+        </sc-if>
+      </div>
+
+    </div>
+  </sc-if>
+
+<!-- ════════════════════════════════════════════════ -->
+<!--  SCREEN 3: CELEBRATE (yes was pressed)          -->
+<!-- ════════════════════════════════════════════════ -->
+  <sc-if value="{{ isCelebrate }}">
+    <div style="position:absolute; inset:0; z-index:10; padding:52px 28px 44px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center; animation: ogFadeIn .5s ease both;">
+
+      <!-- confetti burst (auto-clears after 2.8s) -->
+      <sc-if value="{{ confettiBurst }}">
+        <sc-for list="{{ confetti }}" as="c" hint-placeholder-count="20">
+          <div style="position:absolute; left:{{ c.left }}%; top:-16px; width:{{ c.size }}px; height:{{ c.size2 }}px; background:{{ c.color }}; border-radius:{{ c.radius }}; animation: ogConfetti {{ c.duration }}s ease-in {{ c.delay }}s forwards; z-index:20;"></div>
+        </sc-for>
+      </sc-if>
+
+      <!-- continuously floating hearts -->
+      <sc-for list="{{ hearts }}" as="h" hint-placeholder-count="8">
+        <div style="position:absolute; left:{{ h.left }}%; bottom:-20px; font-size:{{ h.size }}px; opacity:.8; animation: ogHeartDrift {{ h.duration }}s ease-in {{ h.delay }}s infinite;">❤️</div>
+      </sc-for>
+
+      <!-- confirmed stamp -->
+      <div style="border:3px solid #16120a; padding:8px 22px; margin-bottom:4px;">
+        <div style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.3em; color:#9c8060; text-transform:uppercase; margin-bottom:2px;">Confirmed</div>
+        <div style="font-family:'Special Elite', serif; font-size:22px; color:#bf1b2c; letter-spacing:.06em; text-transform:uppercase;">It's a Date.</div>
+      </div>
+
+      <!-- Shin-chan -->
+      <div style="position:relative; animation: ogBob 4.5s ease-in-out infinite;">
+        <div style="width:96px; height:96px; border-radius:50%; border:2px dashed #9c8060; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 0 4px #f5eed8, 0 0 0 6px #c8b99a;">
+          <div style="width:80px; height:80px; border-radius:50%; overflow:hidden; background:#faf6ea; border:1.5px solid #c8b99a;">
+            <img src="https://s3.getstickerpack.com/storage/uploads/sticker-pack/shin-chan-2/sticker_5.webp" alt="Shin-chan"
+                 style="width:100%; height:100%; object-fit:contain; padding:0; mix-blend-mode:multiply;" />
+          </div>
+        </div>
+        <div style="position:absolute; bottom:-2px; right:-2px; width:28px; height:28px; border-radius:50%; background:#bf1b2c; border:2px solid #f5eed8; display:flex; align-items:center; justify-content:center; font-size:13px; box-shadow: 1px 2px 0 rgba(22,18,10,.25);">❤️</div>
+      </div>
+
+      <!-- message -->
+      <div style="width:100%; border-top:1.5px solid #c8b99a; border-bottom:1.5px solid #c8b99a; padding:12px 0; margin:2px 0;">
+        <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a;">See You Then.</div>
+        <div style="font-size:12px; color:#7a6040; font-style:italic; margin-top:4px; font-family:'Courier Prime', monospace;">16 Aug. I'll be at yours at 12.</div>
+      </div>
+
+      <!-- countdown stamps: days / hrs / min / sec -->
+      <div style="display:flex; align-items:center; gap:8px; width:100%;">
+        <div style="flex:1; border:1.5px solid #bf1b2c; padding:10px 6px; text-align:center; background:rgba(191,27,44,.06);">
+          <div style="font-family:'Special Elite', serif; font-size:22px; color:#bf1b2c; font-weight:700;">{{ cdDays }}</div>
+          <div style="font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:2px;">Days</div>
+        </div>
+        <div style="flex:1; border:1.5px solid #9c8060; padding:10px 6px; text-align:center;">
+          <div style="font-family:'Special Elite', serif; font-size:22px; color:#16120a;">{{ cdHours }}</div>
+          <div style="font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:2px;">Hrs</div>
+        </div>
+        <div style="flex:1; border:1.5px solid #9c8060; padding:10px 6px; text-align:center;">
+          <div style="font-family:'Special Elite', serif; font-size:22px; color:#16120a;">{{ cdMins }}</div>
+          <div style="font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:2px;">Min</div>
+        </div>
+        <div style="flex:1; border:1.5px solid #9c8060; padding:10px 6px; text-align:center;">
+          <div style="font-family:'Special Elite', serif; font-size:22px; color:#16120a;">{{ cdSecs }}</div>
+          <div style="font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-top:2px;">Sec</div>
+        </div>
+      </div>
+
+      <!-- footer links -->
+      <div style="display:flex; gap:22px; margin-top:4px;">
+        <span onClick="{{ viewPlan }}" style="font-size:11.5px; color:#9c8060; font-family:'Courier Prime', monospace; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">📋 see the plan</span>
+        <span onClick="{{ replay }}" style="font-size:11.5px; color:#9c8060; font-family:'Courier Prime', monospace; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">↩ back to start</span>
+      </div>
+    </div>
+  </sc-if>
+
+</div><!-- end inner card -->
+</div><!-- end outer wrapper -->
+
+</x-dc>
+
+<!-- ════════════════════════════════════════════════ -->
+<!--  COMPONENT LOGIC                                -->
+<!-- ════════════════════════════════════════════════ -->
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+
+  // ─────────────────────────────────────────────────
+  //  CONSTRUCTOR  (static data + initial state)
+  // ─────────────────────────────────────────────────
+  constructor(props) {
+    super(props);
+    const rand = (min, max) => min + Math.random() * (max - min);
+
+    // floating hearts shown on the celebrate screen
+    this.hearts = Array.from({ length: 8 }, () => ({
+      left: rand(4, 90), size: rand(12, 20), duration: rand(7, 12), delay: rand(0, 9)
+    }));
+
+    // shown below the "No" button after each press
+    this.noHints = [
+      "you sure about that?",
+      "i already made the reservations...",
+      "the fish will be disappointed.",
+      "don't leave me hanging 😢",
+      "okay but your loss",
+      "...see you at 12 regardless. ❤️"
+    ];
+
+    // question text escalates with each "No" press
+    this.questionMessages = [
+      "so, are you in?",
+      "it'll be a good day, i promise.",
+      "come on la.",
+      "i already made reservations.",
+      "please. 🥺",
+      "okay i'll just show up at 12 anyway."
+    ];
+
+    // confetti pieces for the celebrate burst
+    const confettiColors = ['#bf1b2c', '#16120a', '#f5eed8', '#9c8060', '#e8c84a'];
+    this.confetti = Array.from({ length: 20 }, (_, i) => ({
+      left: rand(2, 96), size: rand(5, 9), size2: rand(8, 13),
+      duration: rand(1.5, 2.8), delay: rand(0, 0.6),
+      color: confettiColors[i % confettiColors.length], radius: '1px'
+    }));
+
+    // countdown target: 16 Aug 2026 at 12:00 noon
+    this.targetDate = new Date('2026-08-16T12:00:00');
+
+    this.state = {
+      screen:        'landing',
+      opening:       false,     // true while landing is fading out
+      tapCount:      0,         // Shin-chan tap counter (5 = easter egg)
+      shootStar:     false,     // paper plane easter egg active
+      noCount:       0,         // times "No" has been pressed
+      noWiggle:      false,     // triggers "No" button wiggle animation
+      confettiBurst: false,     // confetti is firing
+      cdDays: '00', cdHours: '00', cdMins: '00', cdSecs: '00',
+      mainPage: 0,              // 0=Details  1=Itinerary  2=Question
+      pageAnim: 'none'
+    };
+
+    setTimeout(() => this.startCountdown(), 0);
+  }
+
+  // ─────────────────────────────────────────────────
+  //  SCREEN TRANSITIONS
+  // ─────────────────────────────────────────────────
+
+  openInvitation = () => {
+    this.setState({ opening: true });
+    // landing fades out over 450ms, then main screen fades in via ogFadeIn
+    setTimeout(() => this.setState({ screen: 'main', opening: false, mainPage: 0, pageAnim: 'none' }), 450);
+  };
+
+  // ─────────────────────────────────────────────────
+  //  PAGE NAVIGATION
+  // ─────────────────────────────────────────────────
+
+  nextPage = () => {
+    this.setState(s => ({ mainPage: Math.min(s.mainPage + 1, 2), pageAnim: 'ogFlipInRight .38s ease forwards' }));
+  };
+
+  prevPage = () => {
+    this.setState(s => ({ mainPage: Math.max(s.mainPage - 1, 0), pageAnim: 'ogFlipInLeft .38s ease forwards' }));
+  };
+
+  // called from the celebrate screen "see the plan" link
+  viewPlan = () => {
+    this.setState({ screen: 'main', mainPage: 1, pageAnim: 'none' });
+  };
+
+  // ─────────────────────────────────────────────────
+  //  TOUCH / SWIPE  (horizontal swipe flips pages)
+  // ─────────────────────────────────────────────────
+
+  onTouchStart = (e) => {
+    if (!e.touches || !e.touches[0]) return;
+    this.touchStartX = e.touches[0].clientX;
+    this.touchStartY = e.touches[0].clientY;
+  };
+
+  onTouchEnd = (e) => {
+    if (this.touchStartX == null) return;
+    const dx = e.changedTouches[0].clientX - this.touchStartX;
+    const dy = e.changedTouches[0].clientY - this.touchStartY;
+    this.touchStartX = null;
+    this.touchStartY = null;
+    if (this.state.screen !== 'main') return;
+    // only trigger if horizontal movement is dominant and large enough
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) this.nextPage();
+    else this.prevPage();
+  };
+
+  // ─────────────────────────────────────────────────
+  //  INTERACTION  (buttons + easter egg)
+  // ─────────────────────────────────────────────────
+
+  // tap Shin-chan 5× on landing to trigger the paper plane
+  tapHangyodon = () => {
+    const c = this.state.tapCount + 1;
+    this.setState({ tapCount: c });
+    if (c % 5 === 0 && !this.state.shootStar) {
+      this.setState({ shootStar: true });
+      setTimeout(() => this.setState({ shootStar: false }), 3400);
+    }
+  };
+
+  pressNo = () => {
+    this.setState(s => ({ noCount: s.noCount + 1, noWiggle: true }));
+    setTimeout(() => this.setState({ noWiggle: false }), 420);
+  };
+
+  pressYes = () => {
+    this.setState({ screen: 'celebrate', confettiBurst: true });
+    this.startCountdown();
+    setTimeout(() => this.setState({ confettiBurst: false }), 2800);
+  };
+
+  replay = () => { this.setState({ screen: 'landing', noCount: 0 }); };
+
+  // ─────────────────────────────────────────────────
+  //  COUNTDOWN  (ticks every second)
+  // ─────────────────────────────────────────────────
+
+  startCountdown = () => {
+    if (this.countdownTimer) return;
+    const pad = (n) => String(n).padStart(2, '0');
+    const tick = () => {
+      const total = Math.max(0, Math.floor((this.targetDate.getTime() - Date.now()) / 1000));
+      this.setState({
+        cdDays:  pad(Math.floor(total / 86400)),
+        cdHours: pad(Math.floor((total % 86400) / 3600)),
+        cdMins:  pad(Math.floor((total % 3600) / 60)),
+        cdSecs:  pad(total % 60)
+      });
+    };
+    tick();
+    this.countdownTimer = setInterval(tick, 1000);
+  };
+
+  stopCountdown = () => {
+    if (this.countdownTimer) { clearInterval(this.countdownTimer); this.countdownTimer = null; }
+  };
+
+  componentWillUnmount() { this.stopCountdown(); }
+
+  // ─────────────────────────────────────────────────
+  //  PARALLAX  (subtle background drift on desktop)
+  // ─────────────────────────────────────────────────
+
+  setBgRef = (el) => { this.bgRef = el; };
+
+  applyParallax(x, y) {
+    if (this.bgRef) this.bgRef.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  onMove = (e) => {
+    const w = window.innerWidth, h = window.innerHeight;
+    this.applyParallax((e.clientX / w - 0.5) * 8, (e.clientY / h - 0.5) * 8);
+  };
+
+  onTouchMoveHandler = (e) => {
+    if (!e.touches || !e.touches[0]) return;
+    const t = e.touches[0];
+    const w = window.innerWidth, h = window.innerHeight;
+    this.applyParallax((t.clientX / w - 0.5) * 6, (t.clientY / h - 0.5) * 6);
+  };
+
+  // ─────────────────────────────────────────────────
+  //  RENDER VALUES  (everything the template reads)
+  // ─────────────────────────────────────────────────
+
+  renderVals() {
+    const s        = this.state;
+    const noCount  = s.noCount;
+    const mainPage = s.mainPage || 0;
+
+    const questionText = this.questionMessages[Math.min(noCount, this.questionMessages.length - 1)];
+    const noHint       = noCount === 0 ? '' : this.noHints[(noCount - 1) % this.noHints.length];
+    const noScale      = Math.max(1 - noCount * 0.09, 0.62).toFixed(2);
+
+    return {
+      // ── screen visibility ──
+      isLanding:   s.screen === 'landing',
+      isMain:      s.screen === 'main',
+      isCelebrate: s.screen === 'celebrate',
+
+      // ── landing ──
+      landingOpacity: s.opening ? 0 : 1,
+      shootStar:      s.shootStar,
+
+      // ── page navigation ──
+      mainPage,
+      mainPageLabel: String(mainPage + 1).padStart(2, '0'),
+      pageAnim:     s.pageAnim || 'none',
+      isPage0:      mainPage === 0,
+      isPage1:      mainPage === 1,
+      isPage2:      mainPage === 2,
+      showPrevPage: mainPage > 0,
+      hidePrevPage: mainPage === 0,
+      showNextPage: mainPage < 2,
+      hideNextPage: mainPage === 2,
+
+      // ── question card ──
+      questionText,
+      queryNum: Math.min(noCount + 1, 6),
+      showNo:   true,
+      noHint,
+      noScale,
+      noAnim:  s.noWiggle ? 'ogWiggle .4s ease' : 'none',
+      yesPad:  Math.min(20 + noCount * 6, 48),
+
+      // ── celebrate screen ──
+      confetti:      this.confetti,
+      confettiBurst: s.confettiBurst,
+      hearts:        this.hearts,
+
+      // ── countdown ──
+      cdDays: s.cdDays, cdHours: s.cdHours, cdMins: s.cdMins, cdSecs: s.cdSecs,
+
+      // ── event handlers ──
+      openInvitation:     this.openInvitation,
+      tapHangyodon:       this.tapHangyodon,
+      pressYes:           this.pressYes,
+      pressNo:            this.pressNo,
+      replay:             this.replay,
+      nextPage:           this.nextPage,
+      prevPage:           this.prevPage,
+      viewPlan:           this.viewPlan,
+      onMove:             this.onMove,
+      onTouchMoveHandler: this.onTouchMoveHandler,
+      onTouchStart:       this.onTouchStart,
+      onTouchEnd:         this.onTouchEnd,
+      setBgRef:           this.setBgRef,
+    };
+  }
+}
+</script>
+</body>
+</html>
