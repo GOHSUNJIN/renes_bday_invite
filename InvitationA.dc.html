@@ -21,6 +21,8 @@
   @keyframes ogHeartDrift { 0%{ transform: translateY(0) scale(.8); opacity:0 } 10%{ opacity:.85 } 90%{ opacity:.65 } 100%{ transform: translateY(-560px) scale(1.1); opacity:0 } }
   @keyframes ogExpandWash { 0%{ transform: scale(0); opacity:.9 } 100%{ transform: scale(2.8); opacity:0 } }
   @keyframes ogBlink   { 0%,100%{ opacity:1 } 50%{ opacity:0 } }
+  @keyframes ogSlideInRight { 0%{ transform:translateX(28px); opacity:0 } 100%{ transform:translateX(0); opacity:1 } }
+  @keyframes ogSlideInLeft  { 0%{ transform:translateX(-28px); opacity:0 } 100%{ transform:translateX(0); opacity:1 } }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { margin:0; }
   .og-noscroll { scrollbar-width: none; -ms-overflow-style: none; }
@@ -50,7 +52,7 @@
 
         <!-- document meta -->
         <div style="width:100%; border:1.5px solid #9c8060; padding:14px 16px 12px; background:#faf6ea; position:relative;">
-          <div style="font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; margin-bottom:6px; font-family:'Courier Prime', monospace;">File No. 16-08-2026 — Personal</div>
+          <div style="font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; margin-bottom:6px; font-family:'Courier Prime', monospace;">File No. 16-08-2026 / Personal</div>
           <div style="font-family:'Special Elite', serif; font-size:28px; color:#16120a; line-height:1.1; margin-bottom:4px;">A Secret<br/>to Share</div>
           <div style="font-size:11px; color:#7a6040; font-style:italic; margin-top:4px;">Recipient: ████████ (You Know Who)</div>
 
@@ -97,105 +99,136 @@
 
   <!-- ══ MAIN / DETAILS SCREEN ══ -->
   <sc-if value="{{ isMain }}">
-    <div class="og-noscroll" style="position:absolute; inset:0; overflow-y:auto; z-index:10; padding:44px 22px 48px; display:flex; flex-direction:column; gap:16px; opacity:{{ mainOpacity }}; transition: opacity .6s ease;">
+    <div style="position:absolute; inset:0; z-index:10; display:flex; flex-direction:column; opacity:{{ mainOpacity }}; transition: opacity .6s ease;">
 
-      <!-- page header -->
-      <div style="border-bottom:2px solid #16120a; padding-bottom:10px; margin-bottom:2px;">
-        <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:4px;">Briefing Document · Eyes Only</div>
-        <div style="font-family:'Special Elite', serif; font-size:24px; color:#16120a; line-height:1.1;">Just Between Us</div>
-      </div>
-
-      <!-- DETAILS CARD (document style) -->
-      <div style="border:1.5px solid #9c8060; background:#faf6ea; padding:0; position:relative; overflow:hidden;">
-
-        <!-- card header -->
-        <div style="background:#16120a; padding:10px 14px; display:flex; align-items:center; gap:10px;">
-          <div style="width:36px; height:36px; border-radius:50%; overflow:hidden; background:#faf6ea; border:1.5px solid #9c8060; flex-shrink:0;">
-            <img src="https://s3.getstickerpack.com/storage/uploads/sticker-pack/shin-chan-2/sticker_1.webp" alt="Shin-chan" style="width:100%; height:100%; object-fit:contain; padding:0; mix-blend-mode:multiply;" />
-          </div>
-          <div>
-            <div style="font-size:9px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">From: Sun Jin</div>
-            <div style="font-family:'Special Elite', serif; font-size:14px; color:#f5eed8; letter-spacing:.04em;">A Private Message</div>
-          </div>
-          <div style="margin-left:auto; border:1.5px solid #bf1b2c; padding:2px 7px; transform:rotate(-8deg);">
-            <span style="font-family:'Special Elite', serif; font-size:9px; letter-spacing:.15em; color:#bf1b2c;">Secret</span>
-          </div>
-        </div>
-
-        <!-- pickup + date -->
-        <div style="display:flex; align-items:flex-start; gap:12px; padding:13px 14px 11px; border-bottom:1px dashed #c8b99a;">
-          <span style="font-size:14px; flex-shrink:0; margin-top:1px;">🚗</span>
-          <div>
-            <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Pickup</div>
-            <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">12pm — I'll be at yours.</div>
-            <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Don't keep me waiting.</div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:flex-start; gap:12px; padding:13px 14px 11px;">
-          <span style="font-size:14px; flex-shrink:0; margin-top:1px;">📅</span>
-          <div>
-            <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Date</div>
-            <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">Sunday, 16 August 2026</div>
-            <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Clear your whole day.</div>
-          </div>
+      <!-- fixed header -->
+      <div style="border-bottom:2px solid #16120a; padding:44px 22px 10px; flex-shrink:0;">
+        <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:4px;">Briefing Document / Eyes Only</div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <div style="font-family:'Special Elite', serif; font-size:24px; color:#16120a; line-height:1.1;">Just Between Us</div>
+          <div style="font-size:9px; letter-spacing:.2em; color:#9c8060; font-family:'Courier Prime', monospace;">{{ mainPageLabel }} / 03</div>
         </div>
       </div>
 
-      <!-- field intel hints -->
-      <div style="border:1.5px solid #9c8060; background:#faf6ea; overflow:hidden;">
-        <div style="background:#9c8060; padding:7px 14px;">
-          <span style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.2em; color:#f5eed8; text-transform:uppercase;">Field Intel — Need to Know</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
-          <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">01</span>
-          <span style="font-size:13px; flex-shrink:0;">🏝️</span>
-          <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">An island. I've already planned our escape route.</div>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
-          <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">02</span>
-          <span style="font-size:13px; flex-shrink:0;">🐠</span>
-          <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">Something lives in the deep. We're going in.</div>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
-          <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">03</span>
-          <span style="font-size:13px; flex-shrink:0;">🌅</span>
-          <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">We stay till the sky runs out of colours.</div>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
-          <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">04</span>
-          <span style="font-size:13px; flex-shrink:0;">📸</span>
-          <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">You'll want to remember this one.</div>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
-          <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">05</span>
-          <span style="font-size:13px; flex-shrink:0;">🐾</span>
-          <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">A good dog is waiting for us.</div>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; padding:10px 14px;">
-          <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">06</span>
-          <span style="font-size:13px; flex-shrink:0;">🎁</span>
-          <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">Blind box. Neither of us knows what's inside.</div>
-        </div>
+      <!-- page area -->
+      <div style="flex:1; position:relative; overflow:hidden;">
+
+        <!-- PAGE 1: Details -->
+        <sc-if value="{{ isPage0 }}">
+          <div style="position:absolute; inset:0; padding:16px 22px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; animation: {{ pageAnim }};" class="og-noscroll">
+
+            <div style="border:1.5px solid #9c8060; background:#faf6ea; overflow:hidden;">
+              <div style="background:#16120a; padding:10px 14px; display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:50%; overflow:hidden; background:#faf6ea; border:1.5px solid #9c8060; flex-shrink:0;">
+                  <img src="https://s3.getstickerpack.com/storage/uploads/sticker-pack/shin-chan-2/sticker_1.webp" alt="Shin-chan" style="width:100%; height:100%; object-fit:contain; padding:0; mix-blend-mode:multiply;" />
+                </div>
+                <div>
+                  <div style="font-size:9px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">From: Sun Jin</div>
+                  <div style="font-family:'Special Elite', serif; font-size:14px; color:#f5eed8; letter-spacing:.04em;">A Private Message</div>
+                </div>
+                <div style="margin-left:auto; border:1.5px solid #bf1b2c; padding:2px 7px; transform:rotate(-8deg);">
+                  <span style="font-family:'Special Elite', serif; font-size:9px; letter-spacing:.15em; color:#bf1b2c;">Secret</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:12px; padding:13px 14px 11px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:14px; flex-shrink:0; margin-top:1px;">🚗</span>
+                <div>
+                  <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Pickup</div>
+                  <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">12pm. I'll be at yours.</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Don't keep me waiting.</div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:12px; padding:13px 14px 11px;">
+                <span style="font-size:14px; flex-shrink:0; margin-top:1px;">📅</span>
+                <div>
+                  <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Date</div>
+                  <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">Sunday, 16 August 2026</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Clear your whole day.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </sc-if>
+
+        <!-- PAGE 2: Field Intel -->
+        <sc-if value="{{ isPage1 }}">
+          <div style="position:absolute; inset:0; padding:16px 22px; overflow-y:auto; animation: {{ pageAnim }};" class="og-noscroll">
+            <div style="border:1.5px solid #9c8060; background:#faf6ea; overflow:hidden;">
+              <div style="background:#9c8060; padding:7px 14px;">
+                <span style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.2em; color:#f5eed8; text-transform:uppercase;">Field Intel / Need to Know</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">01</span>
+                <span style="font-size:13px; flex-shrink:0;">🐾</span>
+                <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">First stop. There's a dog there. More than one.</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">02</span>
+                <span style="font-size:13px; flex-shrink:0;">🐠</span>
+                <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">Something lives in the deep. We're going in.</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">03</span>
+                <span style="font-size:13px; flex-shrink:0;">🎁</span>
+                <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">Blind box. Could be anything. That's the point.</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">04</span>
+                <span style="font-size:13px; flex-shrink:0;">🌅</span>
+                <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">We stay till the sky runs out of colours.</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px dashed #c8b99a;">
+                <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">05</span>
+                <span style="font-size:13px; flex-shrink:0;">🍽️</span>
+                <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">I made a reservation. You'll like it, trust me.</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; padding:10px 14px;">
+                <span style="font-size:10px; color:#9c8060; font-family:'Courier Prime', monospace; flex-shrink:0; min-width:16px;">06</span>
+                <span style="font-size:13px; flex-shrink:0;">📸</span>
+                <div style="font-size:12px; color:#16120a; font-family:'Courier Prime', monospace;">Last stop. You'll want to remember this one.</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- PAGE 3: Question -->
+        <sc-if value="{{ isPage2 }}">
+          <div style="position:absolute; inset:0; padding:16px 22px; display:flex; flex-direction:column; justify-content:center; animation: {{ pageAnim }};">
+            <div style="border:1.5px solid #16120a; background:#faf6ea; padding:20px 18px 18px; position:relative; overflow:hidden;">
+              <div style="position:absolute; bottom:-8px; right:-6px; font-family:'Special Elite', serif; font-size:64px; color:rgba(191,27,44,.06); line-height:1; pointer-events:none; letter-spacing:-.02em; text-transform:uppercase; font-weight:900;">?</div>
+              <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:10px;">Query 0{{ queryNum }}/06</div>
+              <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a; line-height:1.35; min-height:54px; display:flex; align-items:center; margin-bottom:20px;">{{ questionText }}</div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <button onClick="{{ pressYes }}" style="font-family:'Special Elite', serif; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:#f5eed8; background:#bf1b2c; border:none; padding:12px {{ yesPad }}px; cursor:pointer; box-shadow: 2px 3px 0 rgba(22,18,10,.35); display:flex; align-items:center; gap:8px; transition: padding .3s cubic-bezier(.2,.8,.2,1); animation: ogPulse 2.4s ease-in-out infinite;">Affirmative ❤️</button>
+                <sc-if value="{{ showNo }}">
+                  <button onClick="{{ pressNo }}" style="font-family:'Courier Prime', monospace; font-size:13px; color:#9c8060; background:transparent; border:1.5px solid #c8b99a; padding:10px 16px; cursor:pointer; --s:{{ noScale }}; transform: scale({{ noScale }}); transition: transform .3s cubic-bezier(.34,1.56,.64,1); animation: {{ noAnim }};">Negative</button>
+                </sc-if>
+              </div>
+              <div style="font-size:11.5px; color:#9c8060; font-style:italic; margin-top:14px; min-height:16px; font-family:'Courier Prime', monospace;">{{ noHint }}</div>
+            </div>
+          </div>
+        </sc-if>
+
       </div>
 
-      <!-- YES / NO QUESTION -->
-      <div style="border:1.5px solid #16120a; background:#faf6ea; padding:20px 18px 18px; position:relative; overflow:hidden;">
+      <!-- nav bar -->
+      <div style="border-top:1.5px solid #c8b99a; padding:12px 22px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <sc-if value="{{ showPrevPage }}">
+          <button onClick="{{ prevPage }}" style="font-family:'Courier Prime', monospace; font-size:11px; letter-spacing:.18em; color:#9c8060; background:transparent; border:1px solid #c8b99a; padding:8px 14px; cursor:pointer; text-transform:uppercase;">← PREV</button>
+        </sc-if>
+        <sc-if value="{{ hidePrevPage }}">
+          <div style="width:78px;"></div>
+        </sc-if>
 
-        <!-- background watermark -->
-        <div style="position:absolute; bottom:-8px; right:-6px; font-family:'Special Elite', serif; font-size:64px; color:rgba(191,27,44,.06); line-height:1; pointer-events:none; letter-spacing:-.02em; text-transform:uppercase; font-weight:900;">?</div>
+        <div style="font-size:9px; letter-spacing:.25em; color:#9c8060; font-family:'Courier Prime', monospace;">PG {{ mainPageLabel }} / 03</div>
 
-        <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:10px;">Query 0{{ queryNum }}/06</div>
-
-        <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a; line-height:1.35; min-height:54px; display:flex; align-items:center; margin-bottom:20px;">{{ questionText }}</div>
-
-        <div style="display:flex; align-items:center; gap:12px;">
-          <button onClick="{{ pressYes }}" style="font-family:'Special Elite', serif; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:#f5eed8; background:#bf1b2c; border:none; padding:12px {{ yesPad }}px; cursor:pointer; box-shadow: 2px 3px 0 rgba(22,18,10,.35); display:flex; align-items:center; gap:8px; transition: padding .3s cubic-bezier(.2,.8,.2,1); animation: ogPulse 2.4s ease-in-out infinite;">Affirmative ❤️</button>
-          <sc-if value="{{ showNo }}">
-            <button onClick="{{ pressNo }}" style="font-family:'Courier Prime', monospace; font-size:13px; color:#9c8060; background:transparent; border:1.5px solid #c8b99a; padding:10px 16px; cursor:pointer; --s:{{ noScale }}; transform: scale({{ noScale }}); transition: transform .3s cubic-bezier(.34,1.56,.64,1); animation: {{ noAnim }};">Negative</button>
-          </sc-if>
-        </div>
-
-        <div style="font-size:11.5px; color:#9c8060; font-style:italic; margin-top:14px; min-height:16px; font-family:'Courier Prime', monospace;">{{ noHint }}</div>
+        <sc-if value="{{ showNextPage }}">
+          <button onClick="{{ nextPage }}" style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.18em; color:#f5eed8; background:#16120a; border:none; padding:8px 14px; cursor:pointer; text-transform:uppercase;">NEXT →</button>
+        </sc-if>
+        <sc-if value="{{ hideNextPage }}">
+          <div style="width:78px;"></div>
+        </sc-if>
       </div>
 
     </div>
@@ -235,7 +268,7 @@
 
       <div style="width:100%; border-top:1.5px solid #c8b99a; border-bottom:1.5px solid #c8b99a; padding:12px 0; margin:2px 0;">
         <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a;">I'll Be Waiting.</div>
-        <div style="font-size:12px; color:#7a6040; font-style:italic; margin-top:4px; font-family:'Courier Prime', monospace;">16 August · I'll be at yours at 12.</div>
+        <div style="font-size:12px; color:#7a6040; font-style:italic; margin-top:4px; font-family:'Courier Prime', monospace;">16 Aug. I'll be at yours at 12.</div>
       </div>
 
       <!-- countdown as document stamps -->
@@ -314,14 +347,23 @@ class Component extends DCLogic {
     this.state = {
       screen: 'landing', opening: false,
       tapCount: 0, shootStar: false, noCount: 0, noWiggle: false, confettiBurst: false,
-      cdDays: '00', cdHours: '00', cdMins: '00', cdSecs: '00'
+      cdDays: '00', cdHours: '00', cdMins: '00', cdSecs: '00',
+      mainPage: 0, pageAnim: 'none'
     };
     setTimeout(() => this.startCountdown(), 0);
   }
 
   openInvitation = () => {
     this.setState({ opening: true });
-    setTimeout(() => this.setState({ screen: 'main', opening: false }), 850);
+    setTimeout(() => this.setState({ screen: 'main', opening: false, mainPage: 0, pageAnim: 'none' }), 850);
+  };
+
+  nextPage = () => {
+    this.setState(s => ({ mainPage: Math.min(s.mainPage + 1, 2), pageAnim: 'ogSlideInRight .32s ease forwards' }));
+  };
+
+  prevPage = () => {
+    this.setState(s => ({ mainPage: Math.max(s.mainPage - 1, 0), pageAnim: 'ogSlideInLeft .32s ease forwards' }));
   };
 
   tapHangyodon = () => {
@@ -394,6 +436,7 @@ class Component extends DCLogic {
     const noHint = noCount === 0 ? '' : this.noHints[(noCount - 1) % this.noHints.length];
     const noScale = Math.max(1 - noCount * 0.09, 0.62).toFixed(2);
     const noAnim = s.noWiggle ? 'ogWiggle .4s ease' : 'none';
+    const mainPage = s.mainPage || 0;
     return {
       hearts: this.hearts,
       isLanding: s.screen === 'landing',
@@ -421,7 +464,19 @@ class Component extends DCLogic {
       pressNo: this.pressNo,
       replay: this.replay,
       onMove: this.onMove,
-      onTouchMoveHandler: this.onTouchMoveHandler
+      onTouchMoveHandler: this.onTouchMoveHandler,
+      mainPage,
+      mainPageLabel: String(mainPage + 1).padStart(2, '0'),
+      pageAnim: s.pageAnim || 'none',
+      isPage0: mainPage === 0,
+      isPage1: mainPage === 1,
+      isPage2: mainPage === 2,
+      showPrevPage: mainPage > 0,
+      hidePrevPage: mainPage === 0,
+      showNextPage: mainPage < 2,
+      hideNextPage: mainPage === 2,
+      nextPage: this.nextPage,
+      prevPage: this.prevPage
     };
   }
 }
