@@ -56,7 +56,7 @@
 <!--  Shows countdown + DECLASSIFY button.           -->
 <!-- ════════════════════════════════════════════════ -->
   <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
-    <div style="position:absolute; inset:0; display:flex; flex-direction:column; z-index:10; overflow:hidden;">
+    <div style="position:absolute; inset:0; display:flex; flex-direction:column; z-index:10; overflow:hidden; animation: {{ landingExit }};">
 
       <!-- top classification bar -->
       <div style="background:#bf1b2c; padding:36px 0 8px; text-align:center; flex-shrink:0;">
@@ -499,7 +499,7 @@ class Component extends DCLogic {
 
   openInvitation = () => {
     this.setState({ opening: true });
-    setTimeout(() => this.setState({ screen: 'main', opening: false, mainPage: 0, pageAnim: 'none' }), 420);
+    setTimeout(() => this.setState({ screen: 'main', opening: false, mainPage: 0, pageAnim: 'none' }), 380);
   };
 
   // ─────────────────────────────────────────────────
@@ -637,7 +637,8 @@ class Component extends DCLogic {
       isCelebrate: s.screen === 'celebrate',
 
       // ── landing ──
-      mainEntrance: s.opening ? 'ogSlideInRight .42s cubic-bezier(.25,.46,.45,.94) both' : 'none',
+      landingExit:  s.opening ? 'ogSlideOutLeft .38s ease-in-out both' : 'none',
+      mainEntrance: s.opening ? 'ogSlideInRight .38s ease-in-out both' : 'none',
       shootStar:    s.shootStar,
 
       // ── page navigation ──

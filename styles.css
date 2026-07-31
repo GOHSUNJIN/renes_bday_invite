@@ -10,6 +10,7 @@
 @keyframes ogBlink       { 0%,100%{ opacity:1 } 50%{ opacity:0 } }
 @keyframes ogFlipInRight { 0%{ transform:perspective(600px) rotateY(-22deg) translateX(16px); opacity:0 } 100%{ transform:perspective(600px) rotateY(0deg) translateX(0); opacity:1 } }
 @keyframes ogFlipInLeft  { 0%{ transform:perspective(600px) rotateY(22deg) translateX(-16px); opacity:0 } 100%{ transform:perspective(600px) rotateY(0deg) translateX(0); opacity:1 } }
+@keyframes ogSlideOutLeft { 0%{ transform:translateX(0) } 100%{ transform:translateX(-100%) } }
 @keyframes ogSlideInRight { 0%{ transform:translateX(100%) } 100%{ transform:translateX(0) } }
 
 /* ── Base ── */
