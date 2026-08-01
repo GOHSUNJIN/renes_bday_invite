@@ -82,7 +82,7 @@
           <div style="margin-top:10px; display:flex; align-items:center; gap:6px; font-size:11px; font-family:'Courier Prime', monospace; color:#7a6040;">
             <span>To:</span>
             <span style="background:#16120a; color:#16120a; padding:2px 18px; display:inline-block; user-select:none;">▓▓▓▓▓▓</span>
-            <span style="font-style:italic;">(You Know Who)</span>
+            <span style="font-style:italic;">(you)</span>
           </div>
         </div>
 
@@ -138,7 +138,7 @@
           <!-- clearance note + DECLASSIFY button -->
           <div style="flex:1; display:flex; flex-direction:column; gap:12px; padding-top:2px;">
             <div style="border-left:2px solid #c8b99a; padding-left:10px; font-size:12px; color:#5c4f37; font-family:'Courier Prime', monospace; font-style:italic; line-height:1.6;">"took me a while to work up to this"</div>
-            <div style="font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">Auth · Sun Jin</div>
+            <div style="font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace;">— Sun Jin</div>
             <button onClick="{{ openInvitation }}" style="font-family:'Special Elite', serif; font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#f5eed8; background:#16120a; border:none; padding:13px 0; cursor:pointer; box-shadow: 3px 3px 0 #bf1b2c; animation: ogPulse 2.6s ease-in-out infinite; width:100%;">DECLASSIFY →</button>
           </div>
         </div>
@@ -160,7 +160,7 @@
 
       <!-- sticky header: title + page counter -->
       <div style="border-bottom:2px solid #16120a; padding:44px 22px 10px; flex-shrink:0;">
-        <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:4px;">Briefing Document</div>
+        <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:4px;">For You</div>
         <div style="display:flex; align-items:baseline; justify-content:space-between;">
           <div style="font-family:'Special Elite', serif; font-size:24px; color:#16120a; line-height:1.1;">Just Between Us</div>
           <div style="font-size:9px; letter-spacing:.2em; color:#9c8060; font-family:'Courier Prime', monospace;">{{ mainPageLabel }} / 03</div>
@@ -198,7 +198,7 @@
                 <div>
                   <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Rendezvous</div>
                   <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">12pm. I'll be at yours.</div>
-                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Don't keep me waiting.</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">don't keep me waiting</div>
                 </div>
               </div>
 
@@ -208,7 +208,7 @@
                 <div>
                   <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Date</div>
                   <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">Sunday, 16 August 2026</div>
-                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">Clear your whole day.</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">clear your whole day</div>
                 </div>
               </div>
             </div>
@@ -322,7 +322,6 @@
             <div style="width:100%; border:1.5px solid #16120a; background:#faf6ea; padding:20px 18px 18px; position:relative; overflow:hidden;">
               <!-- faint watermark -->
               <div style="position:absolute; bottom:-8px; right:-6px; font-family:'Special Elite', serif; font-size:64px; color:rgba(191,27,44,.06); line-height:1; pointer-events:none; letter-spacing:-.02em; text-transform:uppercase; font-weight:900;">?</div>
-              <div style="font-size:9.5px; letter-spacing:.25em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:10px;">Query 0{{ queryNum }} / 06</div>
               <div style="font-family:'Special Elite', serif; font-size:20px; color:#16120a; line-height:1.35; min-height:54px; display:flex; align-items:center; margin-bottom:20px;">{{ questionText }}</div>
               <div style="display:flex; align-items:center; gap:12px;">
                 <button onClick="{{ pressYes }}" style="font-family:'Special Elite', serif; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:#f5eed8; background:#bf1b2c; border:none; padding:12px {{ yesPad }}px; cursor:pointer; box-shadow: 2px 3px 0 rgba(22,18,10,.35); display:flex; align-items:center; gap:8px; transition: padding .3s cubic-bezier(.2,.8,.2,1); animation: ogPulse 2.4s ease-in-out infinite;">Affirmative ❤️</button>
