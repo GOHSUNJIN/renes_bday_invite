@@ -12,6 +12,9 @@
 @keyframes ogFlipInLeft  { 0%{ transform:perspective(600px) rotateY(22deg) translateX(-16px); opacity:0 } 100%{ transform:perspective(600px) rotateY(0deg) translateX(0); opacity:1 } }
 @keyframes ogSlideOutLeft { 0%{ transform:translateX(0) } 100%{ transform:translateX(-100%) } }
 @keyframes ogSlideInRight { 0%{ transform:translateX(100%) } 100%{ transform:translateX(0) } }
+@keyframes ogFlash        { 0%{ opacity:0 } 18%{ opacity:.6 } 100%{ opacity:0 } }
+@keyframes ogEasterStamp  { 0%{ transform:scale(2.6) rotate(-12deg); opacity:0 } 28%{ transform:scale(.88) rotate(-12deg); opacity:1 } 48%{ transform:scale(1.07) rotate(-12deg) } 62%{ transform:scale(1) rotate(-12deg); opacity:1 } 86%{ opacity:1 } 100%{ transform:scale(1) rotate(-12deg); opacity:0 } }
+@keyframes ogHeartExplode { 0%{ transform:translate(0,0) scale(1.6); opacity:1 } 100%{ transform:translate(var(--hx),var(--hy)) scale(.1); opacity:0 } }
 
 /* ── Base ── */
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }

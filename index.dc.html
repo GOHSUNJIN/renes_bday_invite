@@ -21,6 +21,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
   <script src="./support.js"></script>
 </head>
 <body>
@@ -30,7 +31,6 @@
 <!-- │  HEAD — fonts, favicon, keyframes, base CSS  │ -->
 <!-- └──────────────────────────────────────────────┘ -->
 <helmet data-dc-atomics>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
@@ -46,9 +46,30 @@
      style="position:relative; width:100%; max-width:430px; height:100dvh; max-height:100vh; overflow:hidden;
             background:#f5eed8; background-image:linear-gradient(rgba(22,18,10,.04) 1px, transparent 1px); background-size:100% 30px;">
 
-  <!-- ✈️ Easter egg: paper plane. Tap Shin-chan 5× to trigger. -->
+  <!-- 🌠 Easter egg: tap Shin-chan 5× to trigger -->
   <sc-if value="{{ shootStar }}">
-    <div style="position:absolute; left:0; top:32%; font-size:22px; z-index:40; animation: ogPaperFly 3.2s ease-in-out forwards;">✈️</div>
+    <!-- red screen flash -->
+    <div style="position:absolute; inset:0; background:#bf1b2c; z-index:60; pointer-events:none; animation: ogFlash .55s ease forwards;"></div>
+    <!-- three flying objects at staggered heights + timings -->
+    <div style="position:absolute; left:0; top:20%; font-size:28px; z-index:50; animation: ogPaperFly 2.6s ease-in-out forwards;">🌠</div>
+    <div style="position:absolute; left:0; top:42%; font-size:22px; z-index:50; animation: ogPaperFly 3.1s ease-in-out .28s forwards;">✈️</div>
+    <div style="position:absolute; left:0; top:62%; font-size:26px; z-index:50; animation: ogPaperFly 2.85s ease-in-out .55s forwards;">🌠</div>
+    <!-- dramatic "secret unlocked" stamp in center -->
+    <div style="position:absolute; inset:0; z-index:55; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+      <div style="border:4px solid #bf1b2c; padding:18px 32px; background:#f5eed8; text-align:center; animation: ogEasterStamp 3.4s .12s cubic-bezier(.2,.8,.2,1) both;">
+        <div style="font-size:8px; letter-spacing:.35em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime',monospace; margin-bottom:8px;">Easter Egg Found</div>
+        <div style="font-family:'Special Elite',serif; font-size:30px; color:#bf1b2c; letter-spacing:.04em; text-transform:uppercase; line-height:1;">Secret</div>
+        <div style="font-family:'Special Elite',serif; font-size:22px; color:#16120a; letter-spacing:.04em; text-transform:uppercase; margin-top:2px;">Unlocked 🔓</div>
+      </div>
+    </div>
+    <!-- heart + star burst radiating from center -->
+    <sc-for list="{{ easterHearts }}" as="eh" hint-placeholder-count="12">
+      <div style="position:absolute; left:50%; top:50%; font-size:{{ eh.size }}px; z-index:52; --hx:{{ eh.hx }}px; --hy:{{ eh.hy }}px; animation: ogHeartExplode {{ eh.dur }}s ease-out {{ eh.delay }}s both;">{{ eh.emoji }}</div>
+    </sc-for>
+    <!-- hearts and stars raining from top -->
+    <sc-for list="{{ easterRain }}" as="er" hint-placeholder-count="16">
+      <div style="position:absolute; left:{{ er.left }}%; top:-16px; font-size:{{ er.size }}px; z-index:51; animation: ogConfetti {{ er.dur }}s ease-in {{ er.delay }}s forwards;">{{ er.emoji }}</div>
+    </sc-for>
   </sc-if>
 
 <!-- ════════════════════════════════════════════════ -->
@@ -75,7 +96,7 @@
 
         <!-- big title + stamp + recipient -->
         <div style="position:relative; padding-right:68px;">
-          <div style="font-family:'Special Elite', serif; font-size:38px; color:#16120a; line-height:1.05;">Something<br/>to Tell You</div>
+          <div style="font-family:'Special Elite', serif; font-size:38px; color:#16120a; line-height:1.05;">Something to Tell You</div>
           <div style="position:absolute; top:6px; right:0; border:2.5px solid #bf1b2c; padding:4px 9px; transform:rotate(-12deg); animation: ogStamp .5s .3s cubic-bezier(.2,.8,.2,1) both;">
             <span style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.22em; color:#bf1b2c; text-transform:uppercase; opacity:.9;">Secret</span>
           </div>
@@ -197,7 +218,7 @@
                 <span style="font-size:14px; flex-shrink:0; margin-top:1px;">🚗</span>
                 <div>
                   <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Rendezvous</div>
-                  <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">12pm. I'll be at yours.</div>
+                  <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">I'll be at yours at 12</div>
                   <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">don't keep me waiting</div>
                 </div>
               </div>
@@ -479,6 +500,29 @@ class Component extends DCLogic {
       color: confettiColors[i % confettiColors.length], radius: '1px'
     }));
 
+    // easter egg: 12 particles radiating outward from center
+    this.easterHearts = Array.from({ length: 12 }, (_, i) => {
+      const angle = (i / 12) * Math.PI * 2;
+      const dist = 80 + Math.floor(rand(0, 80));
+      return {
+        hx: Math.round(Math.cos(angle) * dist),
+        hy: Math.round(Math.sin(angle) * dist),
+        size: 14 + Math.floor(rand(0, 10)),
+        dur: (0.65 + rand(0, 0.4)).toFixed(1),
+        delay: rand(0, 0.12).toFixed(2),
+        emoji: ['❤️','✨','⭐','💫','🌟','💖'][i % 6]
+      };
+    });
+
+    // easter egg: rain of hearts/stars falling from top
+    this.easterRain = Array.from({ length: 16 }, (_, i) => ({
+      left: (4 + rand(0, 92)).toFixed(1),
+      size: 12 + Math.floor(rand(0, 10)),
+      dur: (1.5 + rand(0, 1.0)).toFixed(1),
+      delay: (0.5 + rand(0, 1.8)).toFixed(2),
+      emoji: ['❤️','✨','⭐','💫'][i % 4]
+    }));
+
     // countdown target: 16 Aug 2026 at 12:00 noon
     this.targetDate = new Date('2026-08-16T12:00:00');
 
@@ -557,7 +601,7 @@ class Component extends DCLogic {
     this.setState({ tapCount: c });
     if (c % 5 === 0 && !this.state.shootStar) {
       this.setState({ shootStar: true });
-      setTimeout(() => this.setState({ shootStar: false }), 3400);
+      setTimeout(() => this.setState({ shootStar: false }), 4600);
     }
   };
 
@@ -666,6 +710,10 @@ class Component extends DCLogic {
       noScale,
       noAnim:  s.noWiggle ? 'ogWiggle .4s ease' : 'none',
       yesPad:  Math.min(20 + noCount * 6, 48),
+
+      // ── easter egg ──
+      easterHearts:  this.easterHearts,
+      easterRain:    this.easterRain,
 
       // ── celebrate screen ──
       confetti:      this.confetti,
