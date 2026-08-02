@@ -80,7 +80,7 @@
     <div style="position:absolute; inset:0; display:flex; flex-direction:column; z-index:10; overflow:hidden; animation: {{ landingExit }};">
 
       <!-- top classification bar -->
-      <div style="background:#bf1b2c; padding:36px 0 8px; text-align:center; flex-shrink:0;">
+      <div style="background:#bf1b2c; padding:max(env(safe-area-inset-top),12px) 0 8px; text-align:center; flex-shrink:0;">
         <span style="font-family:'Special Elite', serif; font-size:10px; letter-spacing:.4em; color:#f5eed8; text-transform:uppercase;">Top Secret</span>
       </div>
 
@@ -96,7 +96,7 @@
 
         <!-- big title + stamp + recipient -->
         <div style="position:relative; padding-right:68px;">
-          <div style="font-family:'Special Elite', serif; font-size:38px; color:#16120a; line-height:1.05;">Something to Tell You</div>
+          <div style="font-family:'Special Elite', serif; font-size:34px; color:#16120a; line-height:1.05;">Something to Tell You</div>
           <div style="position:absolute; top:6px; right:0; border:2.5px solid #bf1b2c; padding:4px 9px; transform:rotate(-12deg); animation: ogStamp .5s .3s cubic-bezier(.2,.8,.2,1) both;">
             <span style="font-family:'Special Elite', serif; font-size:11px; letter-spacing:.22em; color:#bf1b2c; text-transform:uppercase; opacity:.9;">Secret</span>
           </div>
@@ -112,7 +112,7 @@
 
         <!-- countdown: big digit boxes -->
         <div>
-          <div style="font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:9px;">T-Minus Until Mission Day</div>
+          <div style="font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:9px;">T-Minus</div>
           <div style="display:flex; align-items:flex-end; gap:4px;">
             <div style="flex:1; text-align:center;">
               <div style="font-family:'Special Elite', serif; font-size:34px; color:#bf1b2c; line-height:1; background:rgba(191,27,44,.07); border:1.5px solid #bf1b2c; padding:7px 2px;">{{ cdDays }}</div>
