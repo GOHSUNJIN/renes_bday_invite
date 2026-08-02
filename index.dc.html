@@ -57,9 +57,9 @@
     <!-- dramatic "secret unlocked" stamp in center -->
     <div style="position:absolute; inset:0; z-index:55; display:flex; align-items:center; justify-content:center; pointer-events:none;">
       <div style="border:4px solid #bf1b2c; padding:18px 32px; background:#f5eed8; text-align:center; animation: ogEasterStamp 3.4s .12s cubic-bezier(.2,.8,.2,1) both;">
-        <div style="font-size:8px; letter-spacing:.35em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime',monospace; margin-bottom:8px;">Easter Egg Found</div>
-        <div style="font-family:'Special Elite',serif; font-size:30px; color:#bf1b2c; letter-spacing:.04em; text-transform:uppercase; line-height:1;">Secret</div>
-        <div style="font-family:'Special Elite',serif; font-size:22px; color:#16120a; letter-spacing:.04em; text-transform:uppercase; margin-top:2px;">Unlocked 🔓</div>
+        <div style="font-size:8px; letter-spacing:.35em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime',monospace; margin-bottom:8px;">You Found It</div>
+        <div style="font-family:'Special Elite',serif; font-size:30px; color:#bf1b2c; letter-spacing:.04em; text-transform:uppercase; line-height:1;">Caught You</div>
+        <div style="font-family:'Special Elite',serif; font-size:22px; color:#16120a; letter-spacing:.04em; text-transform:uppercase; margin-top:2px;">snooping around 👀</div>
       </div>
     </div>
     <!-- heart + star burst radiating from center -->
@@ -219,7 +219,7 @@
                 <div>
                   <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Rendezvous</div>
                   <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">I'll be at yours at 12</div>
-                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">don't keep me waiting</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">see you soon</div>
                 </div>
               </div>
 
@@ -229,7 +229,7 @@
                 <div>
                   <div style="font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#9c8060; font-family:'Courier Prime', monospace; margin-bottom:2px;">Date</div>
                   <div style="font-size:13.5px; color:#16120a; font-family:'Courier Prime', monospace; font-weight:700;">Sunday, 16 August 2026</div>
-                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">clear your whole day</div>
+                  <div style="font-size:11.5px; color:#7a6040; font-style:italic; margin-top:1px; font-family:'Courier Prime', monospace;">it's going to be a good day</div>
                 </div>
               </div>
             </div>
@@ -482,7 +482,7 @@ class Component extends DCLogic {
     this.noHints = [
       "you sure about that?",
       "i already made the reservations...",
-      "the fish will be disappointed",
+      "i already made all the reservations...",
       "don't leave me hanging 😢",
       "okay but your loss",
       "...see you at 12 regardless ❤️"
@@ -490,7 +490,7 @@ class Component extends DCLogic {
 
     // question text escalates with each "No" press
     this.questionMessages = [
-      "so are you in?",
+      "so what do you say?",
       "it'll be a good day i promise",
       "come on la",
       "i already made reservations",
